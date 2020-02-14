@@ -10,7 +10,6 @@
     "npm": ">=3",
     "node": ">=5"
   },
-  "author": "Yan Tsishko",
   "scripts": {
     "lint:eslint": "eslint --ignore-path .gitignore --ignore-path .eslintignore --ignore-pattern internals/scripts",
     "lint:staged": "lint-staged",
