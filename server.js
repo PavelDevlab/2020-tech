@@ -41,8 +41,13 @@ app.get('*', (req, res) => {
   store.runSaga(sagas).toPromise().then(() => {
     return loadOnServer({ store, location, routes, helpers })
       .then(() => {
-        const context = {};
 
+        /*
+            todo: resolve this moment with context
+            its never pass to redirect here.
+            React router doc for help.
+        */
+        const context = {};
         if (context.url) {
           req.header('Location', context.url);
           return res.send(302)
