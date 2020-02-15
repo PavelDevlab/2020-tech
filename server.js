@@ -38,6 +38,11 @@ app.get('*', (req, res) => {
   const helpers = {};
   const indexFile = path.resolve('./build/main.html');
 
+  /*
+        todo: Run sagas here is not true way.
+              Run sagas under configureStore and
+              return a new promise for finish store init.
+  */
   store.runSaga(sagas).toPromise().then(() => {
     return loadOnServer({ store, location, routes, helpers })
       .then(() => {
@@ -69,19 +74,20 @@ app.get('*', (req, res) => {
           </StyleContext.Provider>
         );
 
-        const helmet = Helmet.renderStatic();
+        const helmet = Helmet.renderStatic(); // todo: does not work fix it.
 
         fs.readFile(indexFile, 'utf8', (err, data) => {
           if (err) {
             console.log('Something went wrong:', err);
             return res.status(500).send('Oops, better luck next time!');
           }
+          // todo: Strange way to template a file. Use real templates or template-like placeholders.
           data = data.replace('__STYLES__', [...css].join(''));
           data = data.replace('__LOADER__', '');
           data = data.replace('<div id=app></div>', `<div id=app>${appContent}</div>`);
           data = data.replace('<div id="app"></div>', `<div id="app">${appContent}</div>`);
-          data = data.replace('<title></title>', helmet.title.toString());
-          data = data.replace('<meta name="description" content=""/>', helmet.meta.toString());
+          data = data.replace('<title></title>', helmet.title.toString()); // todo: does not work fix it.
+          data = data.replace('<meta name="description" content=""/>', helmet.meta.toString()); // todo: does not work fix it.
           data = data.replace('<script>__INITIAL_DATA__</script>', `<script>window.__INITIAL_DATA__ = ${JSON.stringify(store.getState())};</script>`);
 
           return res.send(data);
