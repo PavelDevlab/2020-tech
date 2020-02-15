@@ -1,6 +1,14 @@
-import Users from './../../pages/Users';
+
 import UsersGender from './../../pages/UsersGender';
 import NotFound from './../../pages/NotFound';
+
+import Loadable from 'react-loadable';
+import Loading from 'components/Loading';
+
+const UsersLoadable = Loadable({
+  loader: () => import('./../../pages/Users'),
+  loading: Loading,
+});
 
 export const StaticRoutesConfig = [
   {
@@ -11,13 +19,13 @@ export const StaticRoutesConfig = [
   },
   {
     key: 'USERS',
-    component: Users,
+    component: UsersLoadable,
     exact: true,
     path: '/users',
   },
   {
     key: 'main',
-    component: Users,
+    component: UsersLoadable,
     exact: true,
     path: '/',
   },
