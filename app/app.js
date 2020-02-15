@@ -23,6 +23,9 @@ const history = process.env.IS_SERVER
   : createBrowserHistory();
 
 const store = configureStore(initialState, history);
+// todo: If the store has private info?
+// todo: Why we attach it to window?
+// Dont do this on production.
 if (!process.env.IS_SERVER) {
   window.store = store;
 }
