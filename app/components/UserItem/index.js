@@ -22,7 +22,7 @@ export default class User extends Component {
         <div>{email}</div>
         <div>{phone}</div>
         <div>
-          <img alt="avatar" src={avatar} />
+          <img alt="avatar" src={""/*avatar*/} />
         </div>
       </div>
     );

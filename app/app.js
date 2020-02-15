@@ -34,6 +34,8 @@ const insertCss = (...styles) => {
 };
 
 export const browserRender = () => {
+  // Todo: Do here just wrapper for App.
+  // And use single route config.
   const dynamicRoutes = [...routes];
   dynamicRoutes[0].routes = [...dynamicRoutes[0].routes, ...StaticRoutesConfig];
 

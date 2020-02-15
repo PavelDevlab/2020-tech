@@ -61,6 +61,8 @@ app.get('*', (req, res) => {
         const css = new Set(); // CSS for all rendered React components
         const insertCss = (...styles) => styles.forEach(style => css.add(style._getCss()));
 
+        // Todo: Do here just wrapper for App.
+        // And use single route config.
         const dynamicRoutes = [...routes];
         dynamicRoutes[0].routes = [...dynamicRoutes[0].routes, ...StaticRoutesConfig];
 
