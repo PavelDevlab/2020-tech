@@ -16,5 +16,5 @@ setToMutableStateFunc(immutableState => immutableState.toJS());
 export default history => combineReducers({
   reduxAsyncConnect,
   router: connectRouter(history),
-  appReducer,
+  appReducer, // todo: Why here dive deeper? Desrtuct it.
 });
