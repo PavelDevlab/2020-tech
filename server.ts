@@ -23,6 +23,15 @@ import sagas from './app/redux/saga';
 const PORT = process.env.PORT || 3001;
 const app = express();
 
+let a;
+const logAString = (str) => {
+    console.log(str);
+};
+
+logAString(a);
+
+
+
 app.use(express.static('./build'));
 
 const initialState = {};

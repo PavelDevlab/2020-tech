@@ -1,4 +1,4 @@
 internals/scripts
 node_modules/
 build
-server.js
+server.ts

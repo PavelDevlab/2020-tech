@@ -8,7 +8,7 @@ const rules = require('./rules');
 
 const nodeConf = {
   target: 'node',
-  entry: './server.js',
+  entry: './server.ts',
   externals: [nodeExternals(), 'react-helmet'],
   output: {
     path: path.resolve('build'),
@@ -37,6 +37,8 @@ const nodeConf = {
       path.resolve(process.cwd(), 'node_modules'),
     ],
     extensions: [
+      '.tsx',
+      '.ts',
       '.js',
       '.jsx',
       '.react.js',

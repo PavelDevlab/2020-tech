@@ -2,6 +2,11 @@ const autoprefixer = require('autoprefixer');
 
 const rules = [
   {
+    test: /\.tsx?$/,
+    use: 'ts-loader',
+    exclude: /node_modules/,
+  },
+  {
     test: /\.jsx?$/,
     exclude: /(node_modules|app[/\\]+libs.*)/,
     use: {
