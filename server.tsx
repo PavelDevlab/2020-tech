@@ -23,14 +23,13 @@ import sagas from './app/redux/saga';
 const PORT = process.env.PORT || 3001;
 const app = express();
 
+/*
 let a;
 const logAString = (str) => {
     console.log(str);
 };
-
 logAString(a);
-
-
+ */
 
 app.use(express.static('./build'));
 
@@ -57,17 +56,20 @@ app.get('*', (req, res) => {
 
         /*
             todo: resolve this moment with context
-            its never pass to redirect here.
-            React router doc for help.
+                  its never pass to redirect here.
+                  React router doc for help.
         */
-        const context = {};
-        if (context.url) {
-          req.header('Location', context.url);
-          return res.send(302)
-        }
+          const context = {};
+        /*
+            todo: resolve this moment with context
+            if (context.url) {
+              req.header('Location', context.url);
+              return res.send(302)
+            }
+         */
 
         const css = new Set(); // CSS for all rendered React components
-        const insertCss = (...styles) => styles.forEach(style => css.add(style._getCss()));
+        const insertCss = (...styles:any[]) => styles.forEach(style => css.add(style._getCss())); // todo: Create a type with a method only for this case.
 
         const appContent = ReactDOMServer.renderToString(
           <StyleContext.Provider value={{ insertCss }}>

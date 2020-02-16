@@ -4,8 +4,9 @@ import thunk from 'redux-thunk';
 import createSagaMiddleware, { END } from 'redux-saga';
 import { routerMiddleware } from 'connected-react-router/immutable';
 import createRootReducer from './reducer';
+import {History} from "history";
 
-export default function index(initialState = {}, history) {
+export default function index(initialState = {}, history:History) {
   const sagaMiddleWare = createSagaMiddleware();
   const middlewares = [
     thunk,
@@ -22,14 +23,14 @@ export default function index(initialState = {}, history) {
   const composeEnhancers =
     process.env.NODE_ENV !== 'production' &&
     typeof window === 'object' &&
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+    (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+      ? (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
         shouldHotReload: false,
       })
       : compose;
   /* eslint-enable */
 
-  const store = createStore(
+  let store:any = createStore( // todo: Solve this any for export store unique interface.
     createRootReducer(history),
     fromJS(initialState),
     composeEnhancers(...enhancers),
@@ -40,8 +41,8 @@ export default function index(initialState = {}, history) {
   // Extensions
   store.injectedReducers = {}; // Reducer registry
 
-  if (module.hot) {
-    module.hot.accept('./reducers', () => {
+  if ((module as any).hot) { // todo: Solve this when investigate how hot reducer works.
+    (module as any).hot.accept('./reducers', () => {
       store.replaceReducer(createRootReducer(store.injectedReducers));
     });
   }

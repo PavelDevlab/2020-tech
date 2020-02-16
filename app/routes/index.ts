@@ -1,9 +1,10 @@
 
-import React from 'react';
+// import React from 'react';
 
 import App from 'components/App';
 import Temp from 'components/Temp';
 import NotFound from 'components/NotFound';
+import { RouteConfig } from 'react-router-config';
 
 /*
 import Loadable from 'react-loadable';
@@ -13,11 +14,10 @@ const UsersLoadable = Loadable({
   loader: () => import('./../../pages/Users'),
   loading: Loading,
 });
+*/
 
- */
 
-
-const routes = [
+const routes:RouteConfig = [
   {
     path: '/',
     component: App,

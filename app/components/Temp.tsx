@@ -1,6 +1,5 @@
-import React from 'react';
+import React from "react";
 import { asyncConnect } from 'redux-connect';
-
 
 const Temp = () => {
     return (

@@ -1,4 +1,4 @@
-import { put, call, fork, all } from 'redux-saga/effects';
+import { put, /*call,*/ fork, all } from 'redux-saga/effects';
 
 export function* loadInitialData() {
     try {
