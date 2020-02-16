@@ -3,9 +3,9 @@ import { fromJS } from 'immutable';
 import thunk from 'redux-thunk';
 import createSagaMiddleware, { END } from 'redux-saga';
 import { routerMiddleware } from 'connected-react-router/immutable';
-import createRootReducer from './reducers';
+import createRootReducer from './reducer';
 
-export default function configureStore(initialState = {}, history) {
+export default function index(initialState = {}, history) {
   const sagaMiddleWare = createSagaMiddleware();
   const middlewares = [
     thunk,

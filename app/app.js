@@ -3,15 +3,14 @@ import { hydrate } from 'react-dom';
 import { Provider } from 'react-redux';
 import { createBrowserHistory, createMemoryHistory } from 'history';
 import { ConnectedRouter } from 'connected-react-router/immutable';
-import routes from 'containers/App/routes/routesJson';
+import routes from 'routes';
 import {
   ReduxAsyncConnect,
 } from 'redux-connect';
 import StyleContext from 'isomorphic-style-loader/StyleContext';
 
-import configureStore from './configureStore';
+import index from './redux';
 
-import { StaticRoutesConfig } from './containers/App/routes/StaticRoutes';
 
 // eslint-disable-next-line no-underscore-dangle
 const initialState = !process.env.IS_SERVER ? window.__INITIAL_DATA__ : {};
@@ -22,7 +21,7 @@ const history = process.env.IS_SERVER
   })
   : createBrowserHistory();
 
-const store = configureStore(initialState, history);
+const store = index(initialState, history);
 // todo: If the store has private info?
 // todo: Why we attach it to window?
 // Dont do this on production.
@@ -37,16 +36,12 @@ const insertCss = (...styles) => {
 };
 
 export const browserRender = () => {
-  // Todo: Do here just wrapper for App.
-  // And use single route config.
-  const dynamicRoutes = [...routes];
-  dynamicRoutes[0].routes = [...dynamicRoutes[0].routes, ...StaticRoutesConfig];
 
   hydrate(
     <StyleContext.Provider value={{ insertCss }}>
       <Provider key="provider" store={store} >
         <ConnectedRouter history={history}>
-          <ReduxAsyncConnect helpers={{}} routes={dynamicRoutes} />
+          <ReduxAsyncConnect helpers={{}} routes={routes} />
         </ConnectedRouter>
       </Provider>
     </StyleContext.Provider>,

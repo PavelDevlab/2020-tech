@@ -12,14 +12,13 @@ import { createMemoryHistory } from 'history';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
 
-import configureStore from './app/configureStore';
+import index from './app/redux';
 import { parse as parseUrl } from 'url'
 import { ReduxAsyncConnect, loadOnServer } from 'redux-connect'
 import StyleContext from 'isomorphic-style-loader/StyleContext'
 
-import routes from './app/containers/App/routes/routesJson';
-import { StaticRoutesConfig } from './app/containers/App/routes/StaticRoutes';
-import sagas from './app/sagas';
+import routes from './app/routes';
+import sagas from './app/redux/saga';
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -33,7 +32,7 @@ app.get('*', (req, res) => {
   const history = createMemoryHistory({
     initialEntries: [url],
   });
-  const store = configureStore(initialState, history);
+  const store = index(initialState, history);
   const location = parseUrl(url);
   const helpers = {};
   const indexFile = path.resolve('./build/main.html');
@@ -61,16 +60,11 @@ app.get('*', (req, res) => {
         const css = new Set(); // CSS for all rendered React components
         const insertCss = (...styles) => styles.forEach(style => css.add(style._getCss()));
 
-        // Todo: Do here just wrapper for App.
-        // And use single route config.
-        const dynamicRoutes = [...routes];
-        dynamicRoutes[0].routes = [...dynamicRoutes[0].routes, ...StaticRoutesConfig];
-
         const appContent = ReactDOMServer.renderToString(
           <StyleContext.Provider value={{ insertCss }}>
             <Provider store={store} key="provider">
               <StaticRouter location={location} context={context}>
-                <ReduxAsyncConnect routes={dynamicRoutes} helpers={helpers}/>
+                <ReduxAsyncConnect routes={routes} helpers={helpers}/>
               </StaticRouter>
             </Provider>
           </StyleContext.Provider>
