@@ -13,7 +13,7 @@ import index from './redux';
 
 
 // eslint-disable-next-line no-underscore-dangle
-const initialState = !process.env.IS_SERVER ? window.__INITIAL_DATA__ : {};
+const initialState = !process.env.IS_SERVER ? (window as any).__INITIAL_DATA__ : {};
 
 const history = process.env.IS_SERVER
   ? createMemoryHistory({
@@ -26,10 +26,10 @@ const store = index(initialState, history);
 // todo: Why we attach it to window?
 // Dont do this on production.
 if (!process.env.IS_SERVER) {
-  window.store = store;
+    (window as any).store = store;
 }
 
-const insertCss = (...styles) => {
+const insertCss = (...styles:any[]) => {
   // eslint-disable-next-line no-underscore-dangle
   const removeCss = styles.map(style => style._insertCss());
   return () => removeCss.forEach(dispose => dispose());

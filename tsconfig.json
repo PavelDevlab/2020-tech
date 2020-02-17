@@ -91,5 +91,8 @@
     "app/**/*.tsx",
     "server.tsx",
     "server.ts"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }
