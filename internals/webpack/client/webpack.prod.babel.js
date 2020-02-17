@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = require('./webpack.base.babel')({
   entry: [
-    path.join(process.cwd(), 'browser/index.js'),
+    path.join(process.cwd(), 'browser/index.ts'),
   ],
 
   output: {
@@ -40,4 +40,6 @@ module.exports = require('./webpack.base.babel')({
       inject: true,
     }),
   ],
+
+  mode: 'production',
 });

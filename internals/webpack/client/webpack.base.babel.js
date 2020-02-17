@@ -32,6 +32,11 @@ module.exports = options => ({
   module: {
     rules: [
       {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+      {
         test: /\.jsx?$/,
         exclude: /(node_modules|app[/\\]+libs.*)/,
         use: {
@@ -98,6 +103,8 @@ module.exports = options => ({
       path.resolve(process.cwd(), 'node_modules'),
     ],
     extensions: [
+      '.tsx',
+      '.ts',
       '.js',
       '.jsx',
       '.react.js',
@@ -118,4 +125,6 @@ module.exports = options => ({
     net: 'empty',
     tls: 'empty',
   },
+
+  mode: options.mode || 'production'
 });

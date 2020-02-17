@@ -19,7 +19,7 @@ const plugins = [
 module.exports = require('./webpack.base.babel')({
   entry: [
     'eventsource-polyfill', // Necessary for hot reloading with IE
-    path.join(process.cwd(), 'browser/index.js'),
+    path.join(process.cwd(), 'browser/index.ts'),
   ],
 
   output: {
@@ -33,4 +33,6 @@ module.exports = require('./webpack.base.babel')({
   performance: {
     hints: false,
   },
+
+  mode: 'development',
 });

@@ -7,8 +7,9 @@ const alias = require('./../alias');
 const rules = require('./rules');
 
 const nodeConf = {
+  mode: 'development',
   target: 'node',
-  entry: './server.ts',
+  entry: './server.tsx',
   externals: [nodeExternals(), 'react-helmet'],
   output: {
     path: path.resolve('build'),
