@@ -1,4 +1,3 @@
 internals/scripts
 node_modules/
 build
-server.tsx
