@@ -99,7 +99,7 @@ module.exports = options => ({
   resolve: {
     alias,
     modules: [
-      path.resolve('./app'),
+      // path.resolve('./app'),
       path.resolve(process.cwd(), 'node_modules'),
     ],
     extensions: [

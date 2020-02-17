@@ -6,7 +6,7 @@ import { routerMiddleware } from 'connected-react-router/immutable';
 import createRootReducer from './reducer';
 import {History} from "history";
 
-export default function index(initialState = {}, history:History) {
+function createAppStore(initialState:any = {}, history:History) {
   const sagaMiddleWare = createSagaMiddleware();
   const middlewares = [
     thunk,
@@ -40,12 +40,16 @@ export default function index(initialState = {}, history:History) {
   store.close = () => store.dispatch(END);
   // Extensions
   store.injectedReducers = {}; // Reducer registry
-
+/*
+  todo: commonjs modules dont build for TS
   if ((module as any).hot) { // todo: Solve this when investigate how hot reducer works.
     (module as any).hot.accept('./reducers', () => {
       store.replaceReducer(createRootReducer(store.injectedReducers));
     });
   }
+ */
 
   return store;
 }
+
+export default createAppStore;

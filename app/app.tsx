@@ -3,13 +3,13 @@ import { hydrate } from 'react-dom';
 import { Provider } from 'react-redux';
 import { createBrowserHistory, createMemoryHistory } from 'history';
 import { ConnectedRouter } from 'connected-react-router/immutable';
-import routes from 'routes';
+import routes from 'app/routes';
 import {
   ReduxAsyncConnect,
 } from 'redux-connect';
 import StyleContext from 'isomorphic-style-loader/StyleContext';
 
-import index from './redux';
+import index from 'app/redux';
 
 
 // eslint-disable-next-line no-underscore-dangle

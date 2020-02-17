@@ -43,7 +43,7 @@ const nodeConf = {
   resolve: {
     alias,
     modules: [
-      path.resolve('./app'),
+      // path.resolve('./app'),
       path.resolve(process.cwd(), 'node_modules'),
     ],
     extensions: [

@@ -53,15 +53,19 @@
     // "noFallthroughCasesInSwitch": true,    /* Report errors for fallthrough cases in switch statement. */
 
     /* Module Resolution Options */
+    // "moduleResolution": "node",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
     "moduleResolution": "node",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
-    "baseUrl": "./",                       /* Base directory to resolve non-absolute module names. */
+    "baseUrl": ".",                       /* Base directory to resolve non-absolute module names. */
     "paths": {
       "*": [
-        "node_modules/*",
-        "app/*"
-      ]
+        "*",
+        "node_modules/*"
+      ],
+      "app/*": ["app/*"],
+      "components/*": ["app/components/*"],
+      "containers/*": ["app/containers/*"]
     },           /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
-    // "rootDirs": ["node_modules", "./app"],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
+    "rootDirs": ["node_modules", "app", "app/components/", "app/containers/"],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
     "typeRoots": ["node_modules/@types", "custom-types"],  /* List of folders to include type definitions from. */
     // "types": [],
     /* Type declaration files to be included in compilation. */
