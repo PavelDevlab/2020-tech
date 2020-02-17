@@ -5,6 +5,7 @@ import fs from 'fs';
 import { Provider } from 'react-redux';
 import Loadable from 'react-loadable';
 
+
 import Helmet from 'react-helmet';
 import React from 'react';
 import express from 'express';
@@ -14,13 +15,12 @@ import { StaticRouter } from 'react-router-dom';
 
 
 import createAppStore from 'app/redux';
-import { parse as parseUrl } from 'url'
-import { ReduxAsyncConnect, loadOnServer } from 'redux-connect'
-import StyleContext from 'isomorphic-style-loader/StyleContext'
+import { parse as parseUrl } from 'url';
+import { ReduxAsyncConnect, loadOnServer } from 'redux-connect';
+import StyleContext from 'isomorphic-style-loader/StyleContext';
 
 import routes from 'app/routes';
 import sagas from 'app/redux/saga';
-
 
 
 const PORT = process.env.PORT || 3001;
@@ -50,7 +50,7 @@ app.get('*', (req, res) => {
               Run sagas under configureStore and
               return a new promise for finish store init.
   */
-  store.runSaga(sagas).toPromise().then(() => {
+                        store.runSaga(sagas).toPromise().then(() => {
     return loadOnServer({ store, location, routes, helpers })
       .then(() => {
         /*
@@ -58,7 +58,7 @@ app.get('*', (req, res) => {
                   its never pass to redirect here.
                   React router doc for help.
         */
-          const context = {};
+        const context = {};
         /*
             todo: resolve this moment with context
             if (context.url) {
@@ -67,15 +67,17 @@ app.get('*', (req, res) => {
             }
          */
         const css = new Set(); // CSS for all rendered React components
-        const insertCss = (...styles:any[]) => styles.forEach(style => css.add(style._getCss())); // todo: Create a type with a method only for this case.
+        // eslint-disable-next-line no-underscore-dangle
+        const insertCss = (...styles:any[]) => styles.forEach(style => css.add(style._getCss()));
+        // todo: Create a type with a method only for this case.
         const appContent = ReactDOMServer.renderToString(
           <StyleContext.Provider value={{ insertCss }}>
-            <Provider store={store} key="provider">
-              <StaticRouter location={location} context={context}>
-                <ReduxAsyncConnect routes={routes} helpers={helpers}/>
+            <Provider key="provider" store={store}>
+              <StaticRouter context={context} location={location}>
+                <ReduxAsyncConnect helpers={helpers} routes={routes} />
               </StaticRouter>
             </Provider>
-          </StyleContext.Provider>
+          </StyleContext.Provider>,
         );
         const helmet = Helmet.renderStatic(); // todo: does not work fix it.
         fs.readFile(indexFile, 'utf8', (err, data) => {

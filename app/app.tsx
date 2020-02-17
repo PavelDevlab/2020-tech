@@ -8,6 +8,7 @@ import {
   ReduxAsyncConnect,
 } from 'redux-connect';
 import StyleContext from 'isomorphic-style-loader/StyleContext';
+import 'app/services/api';
 
 import index from 'app/redux';
 
