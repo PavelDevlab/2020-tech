@@ -45,6 +45,37 @@ module.exports = options => ({
         },
       },
       {
+        test: /\.scss$/,
+        exclude: /node_modules/,
+        use: [
+          'isomorphic-style-loader',
+          {
+            loader: 'css-loader?modules=false',
+            options: {
+              importLoaders: 1,
+              modules: true,
+              localIdentName: process.env.NODE_ENV !== 'production' ? '[name]-[local]-[hash:base64:5]' : '[hash:base64:5]',
+            },
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: [
+                autoprefixer({
+                  browsers: [
+                    'ie >= 8',
+                    'last 4 version',
+                    'iOS >= 8',
+                  ],
+                }),
+              ],
+              sourceMap: true,
+            },
+          },
+          'sass-loader',
+        ],
+      },
+      {
         test: /\.less$/,
         exclude: /node_modules/,
         use: [
