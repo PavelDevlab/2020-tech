@@ -33,6 +33,7 @@ const nodeConf = {
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+        IS_SERVER: true,
       },
     }),
     new webpack.ProvidePlugin({

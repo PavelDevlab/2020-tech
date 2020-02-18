@@ -5,7 +5,7 @@ import { compose } from 'redux';
 import withStyles from 'isomorphic-style-loader/withStyles';
 import s from './style.scss';
 
-import NotFound from './NotFound';
+// import NotFound from './NotFound';
 
 import {Func1} from 'redux';
 
@@ -24,7 +24,7 @@ class Temp extends Component {
     render() {
         return (
             <div>
-                <NotFound />
+                {/* <NotFound /> */}
                 <div className={s["my-style"]}>Temp</div>
             </div>
         );

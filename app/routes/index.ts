@@ -31,6 +31,7 @@ const routes:RouteConfig = [
       {
         key: 'not-found',
         component: NotFound,
+        path: '*',
       },
     ],
   },

@@ -26,6 +26,12 @@ const nodeConf = {
       { from: 'app/images', to: 'images' },
       { from: 'app/static/**', to: '.' },
     ]),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+        IS_SERVER: true,
+      },
+    }),
     new webpack.ProvidePlugin({
       window: path.resolve(path.join(__dirname, './../window.mock')),
       document: 'global/document',
