@@ -5,14 +5,12 @@ import fs from 'fs';
 import { Provider } from 'react-redux';
 import Loadable from 'react-loadable';
 
-
 import Helmet from 'react-helmet';
 import React from 'react';
 import express from 'express';
 import { createMemoryHistory } from 'history';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
-
 
 import createAppStore from 'app/redux';
 import { parse as parseUrl } from 'url';
@@ -21,7 +19,6 @@ import StyleContext from 'isomorphic-style-loader/StyleContext';
 
 import routes from 'app/routes';
 import sagas from 'app/redux/saga';
-
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -50,9 +47,11 @@ app.get('*', (req, res) => {
               Run sagas under configureStore and
               return a new promise for finish store init.
   */
-                        store.runSaga(sagas).toPromise().then(() => {
-    return loadOnServer({ store, location, routes, helpers })
-      .then(() => {
+  store
+    .runSaga(sagas)
+    .toPromise()
+    .then(() => {
+      return loadOnServer({ store, location, routes, helpers }).then(() => {
         /*
             todo: resolve this moment with context
                   its never pass to redirect here.
@@ -68,7 +67,8 @@ app.get('*', (req, res) => {
          */
         const css = new Set(); // CSS for all rendered React components
         // eslint-disable-next-line no-underscore-dangle
-        const insertCss = (...styles:any[]) => styles.forEach(style => css.add(style._getCss()));
+        const insertCss = (...styles: any[]) =>
+          styles.forEach(style => css.add(style._getCss()));
         // todo: Create a type with a method only for this case.
         const appContent = ReactDOMServer.renderToString(
           <StyleContext.Provider value={{ insertCss }}>
@@ -77,31 +77,47 @@ app.get('*', (req, res) => {
                 <ReduxAsyncConnect helpers={helpers} routes={routes} />
               </StaticRouter>
             </Provider>
-          </StyleContext.Provider>,
+          </StyleContext.Provider>
         );
         const helmet = Helmet.renderStatic(); // todo: does not work fix it.
         fs.readFile(indexFile, 'utf8', (err, data) => {
           if (err) {
+            // eslint-disable-next-line no-console
             console.log('Something went wrong:', err);
             return res.status(500).send('Oops, better luck next time!');
           }
           // todo: Strange way to template a file. Use real templates or template-like placeholders.
           data = data.replace('__STYLES__', [...css].join(''));
           data = data.replace('__LOADER__', '');
-          data = data.replace('<div id=app></div>', `<div id=app>${appContent}</div>`);
-          data = data.replace('<div id="app"></div>', `<div id="app">${appContent}</div>`);
-          data = data.replace('<title></title>', helmet.title.toString()); // todo: does not work fix it.
-          data = data.replace('<meta name="description" content=""/>', helmet.meta.toString()); // todo: does not work fix it.
-          data = data.replace('<script>__INITIAL_DATA__</script>', `<script>window.__INITIAL_DATA__ = ${JSON.stringify(store.getState())};</script>`);
+          data = data.replace(
+            '<div id=app></div>',
+            `<div id=app>${appContent}</div>`
+          );
+          data = data.replace(
+            '<div id="app"></div>',
+            `<div id="app">${appContent}</div>`
+          );
+          data = data.replace('<title></title>', helmet.title.toString());
+          // todo: does not work fix it.
+          data = data.replace(
+            '<meta name="description" content=""/>',
+            helmet.meta.toString()
+          ); // todo: does not work fix it.
+          data = data.replace(
+            '<script>__INITIAL_DATA__</script>',
+            `<script>window.__INITIAL_DATA__ = ${JSON.stringify(
+              store.getState()
+            )};</script>`
+          );
+          store.close();
           return res.send(data);
         });
       });
-      store.close();
-  });
+    });
 });
 Loadable.preloadAll().then(() => {
   app.listen(PORT, () => {
+    // eslint-disable-next-line no-console
     console.log(`😎 Server is listening on port ${PORT}`);
   });
 });
-
