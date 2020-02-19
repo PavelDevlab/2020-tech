@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import AppLayout from 'components/AppLayout';
 // import PropTypes from 'prop-types';
 // import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -44,11 +45,10 @@ class App extends Component<AppComponentProps, {}> {
         const { route } = this.props;
 
         return (
-            <div>
+            <AppLayout>
                 {this.renderSiteMeta()}
-                {this.props.children}
                 {renderRoutes(route.routes)}
-            </div>
+            </AppLayout>
         );
     }
 }

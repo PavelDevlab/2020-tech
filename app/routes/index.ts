@@ -4,6 +4,9 @@
 import App from 'components/App';
 import Temp from 'components/Temp';
 import NotFound from 'components/NotFound';
+import RegisterPage from 'components/RegisterPage';
+import LoginPage from 'components/LoginPage';
+import RecoverPage from 'components/RecoverPage';
 import { RouteConfig } from 'react-router-config';
 
 /*
@@ -23,10 +26,28 @@ const routes:RouteConfig = [
     component: App,
     routes: [
       {
-        key: 'usersGender',
+        key: 'main',
         component: Temp,
         exact: true,
         path: '/',
+      },
+      {
+        key: 'authRegister',
+        component: RegisterPage,
+        exact: true,
+        path: '/register',
+      },
+      {
+        key: 'authLogin',
+        component: LoginPage,
+        exact: true,
+        path: '/login',
+      },
+      {
+        key: 'authRecover',
+        component: RecoverPage,
+        exact: true,
+        path: '/recover',
       },
       {
         key: 'not-found',
