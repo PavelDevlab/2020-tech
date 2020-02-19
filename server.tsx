@@ -31,7 +31,7 @@ const logAString = (str) => {
 logAString(a);
 */
 
-app.use(express.static('./build'));
+app.use(express.static('./build/public'));
 const initialState = {};
 app.get('*', (req, res) => {
   const url = req.originalUrl || req.url;
@@ -41,7 +41,7 @@ app.get('*', (req, res) => {
   const store = createAppStore(initialState, history);
   const location = parseUrl(url);
   const helpers = {};
-  const indexFile = path.resolve('./build/main.html');
+  const indexFile = path.resolve('./build/public/main.html');
   /*
         todo: Run sagas here is not true way.
               Run sagas under configureStore and

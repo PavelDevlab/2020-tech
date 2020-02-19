@@ -22,10 +22,12 @@ const nodeConf = {
     rules,
   },
   plugins: [
+      /*
     new CopyWebpackPlugin([
       { from: 'app/images', to: 'images' },
       { from: 'app/static/**', to: '.' },
     ]),
+    */
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),

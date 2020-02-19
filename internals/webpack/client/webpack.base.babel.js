@@ -27,7 +27,7 @@ const plugins = [
 module.exports = options => ({
   entry: options.entry,
   output: Object.assign({
-    path: path.resolve(process.cwd(), 'build'),
+    path: path.resolve(process.cwd(), 'build/public'),
     publicPath: '/',
   }, options.output),
   module: {
