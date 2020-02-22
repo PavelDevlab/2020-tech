@@ -12,11 +12,19 @@ import {
   setToMutableStateFunc,
 } from 'redux-connect';
 
+type ReducerState<R> = R extends <S, A>(state: infer T, action: A) => S ? T : never;
+type ReducerCreatorResult<C> = C extends (history: History) => infer T ? T : never;
+type ReduxState<C> = ReducerState<ReducerCreatorResult<C>>;
+
 setToImmutableStateFunc((mutableState:any) => fromJS(mutableState));
 setToMutableStateFunc((immutableState:any) => immutableState.toJS());
 
-export default (history:History) => combineReducers({
+const rootReducerCreator = (history:History) => combineReducers({
   reduxAsyncConnect,
   router: connectRouter(history),
   // appReducer, // todo: Why here dive deeper? Desrtuct it.
 });
+
+export type ReduxAppState = ReduxState<typeof rootReducerCreator>;
+
+export default rootReducerCreator;
