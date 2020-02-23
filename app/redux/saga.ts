@@ -1,21 +1,10 @@
-import { put, /*call,*/ fork, all } from 'redux-saga/effects';
-
-export function* loadInitialData() {
-    try {
-        yield put({type: "TEMP_ACTION"});
-    } catch (e) {
-        console.error(e);
-    }
-}
-
-function* watch() {
-    yield fork(loadInitialData);
-}
+import { fork, all } from 'redux-saga/effects';
+import { saga as authSaga } from 'app/redux/ducks/auth';
 
 
 function* appSagas() {
     yield all([
-        fork(watch),
+        fork(authSaga),
     ]);
 }
 

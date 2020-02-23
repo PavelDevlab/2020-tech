@@ -1,7 +1,7 @@
 
 
 // import { ApplicationState } from "./rootReducer"; // todo: Apply true ApplicationState
-type ApplicationState = any;
+import {ReduxAppState as ApplicationState} from 'app/redux/reducer';
 
 import * as React from "react";
 import {

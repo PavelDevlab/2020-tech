@@ -2,4 +2,5 @@
 /build
 /_arh
 /node_modules
-/app/config
+/app/config/firebaseConfig.ts
+/package-lock.json

@@ -17,7 +17,7 @@ import { parse as parseUrl } from 'url';
 import { ReduxAsyncConnect, loadOnServer } from 'redux-connect';
 import StyleContext from 'isomorphic-style-loader/StyleContext';
 
-import routes from 'app/routes';
+import routes from 'app/components/routes';
 import sagas from 'app/redux/saga';
 
 const PORT = process.env.PORT || 3001;

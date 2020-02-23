@@ -4,9 +4,9 @@
 import App from 'components/App';
 import Temp from 'components/Temp';
 import NotFound from 'components/NotFound';
-import RegisterPage from 'components/RegisterPage';
-import LoginPage from 'components/LoginPage';
-import RecoverPage from 'components/RecoverPage';
+import RegisterPage from 'components/auth/RegisterPage';
+import LoginPage from 'components/auth/LoginPage';
+import RecoverPage from 'components/auth/RecoverPage';
 import { RouteConfig } from 'react-router-config';
 
 /*

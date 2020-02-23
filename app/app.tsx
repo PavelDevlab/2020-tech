@@ -3,7 +3,7 @@ import { hydrate } from 'react-dom';
 import { Provider } from 'react-redux';
 import { createBrowserHistory, createMemoryHistory } from 'history';
 import { ConnectedRouter } from 'connected-react-router/immutable';
-import routes from 'app/routes';
+import routes from 'app/components/routes';
 import {
   ReduxAsyncConnect,
 } from 'redux-connect';

@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet';
 import { renderRoutes } from 'react-router-config';
 import { RouteConfig } from 'react-router-config';
 
-import {connect} from 'app/extentions/react-redux'; // todo: Make it work.
+import {connect} from 'app/extentions/react-redux'; // todo: Make it works.
 
 // import { getRouterLocation } from './selectors/router';
 
