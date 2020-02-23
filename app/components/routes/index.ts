@@ -7,6 +7,7 @@ import NotFound from 'components/NotFound';
 import RegisterPage from 'components/auth/RegisterPage';
 import LoginPage from 'components/auth/LoginPage';
 import RecoverPage from 'components/auth/RecoverPage';
+import Dashboard from 'components/shop/Dashboard';
 import { RouteConfig } from 'react-router-config';
 
 /*
@@ -48,6 +49,12 @@ const routes:RouteConfig = [
         component: RecoverPage,
         exact: true,
         path: '/recover',
+      },
+      {
+        key: 'dashboard',
+        component: Dashboard,
+        exact: true,
+        path: "/dashboard"
       },
       {
         key: 'not-found',

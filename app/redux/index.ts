@@ -2,12 +2,13 @@ import {createStore, applyMiddleware, compose, Store} from 'redux';
 import { fromJS } from 'immutable';
 import thunk from 'redux-thunk';
 import createSagaMiddleware, { END } from 'redux-saga';
+import { History } from 'history';
+
 
 import { SagaMiddleware } from '@redux-saga/core/types';
 
 import { routerMiddleware } from 'connected-react-router/immutable';
 import createRootReducer, {ReduxAppState} from './reducer';
-import {History} from "history";
 
 // type Reducer<S> = <A extends Action>(state: S, action: A) => S;
 type EnhancedStore<S> = Store<S> & {
@@ -28,7 +29,7 @@ const createEnhancedStore = (store:Store<ReduxAppState>, sagaMiddleWare:SagaMidd
   return enhancedStore;
 };
 
-function createAppStore(initialState:any, history:History) {
+function createAppStore(initialState:any, history:History<History.PoorMansUnknown>) {
   const sagaMiddleWare = createSagaMiddleware();
   const middlewares = [
     thunk,

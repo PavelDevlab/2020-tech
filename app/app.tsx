@@ -1,7 +1,7 @@
 import React from 'react';
 import { hydrate } from 'react-dom';
 import { Provider } from 'react-redux';
-import { createBrowserHistory, createMemoryHistory } from 'history';
+
 import { ConnectedRouter } from 'connected-react-router/immutable';
 import routes from 'app/components/routes';
 import {
@@ -9,18 +9,13 @@ import {
 } from 'redux-connect';
 import StyleContext from 'isomorphic-style-loader/StyleContext';
 import 'app/services/api';
+import history from 'app/redux/history';
 
 import index from 'app/redux';
 
 
 // eslint-disable-next-line no-underscore-dangle
 const initialState = !process.env.IS_SERVER ? (window as any).__INITIAL_DATA__ : {};
-
-const history = process.env.IS_SERVER
-  ? createMemoryHistory({
-    initialEntries: ['/'],
-  })
-  : createBrowserHistory();
 
 const store = index(initialState, history);
 // todo: If the store has private info?

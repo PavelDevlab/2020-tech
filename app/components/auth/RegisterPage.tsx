@@ -8,16 +8,11 @@ import PropTypes, { InferProps } from "prop-types";
 import { registerPerson } from 'app/redux/ducks/auth';
 
 import { FormikValues, FormikHelpers } from 'formik/dist/types';
+import { RegisterValues } from './types/RegisterPage';
 
 import {connect} from 'app/extentions/react-redux'; // todo: Make it works.
 
-type RegisterValues =  {
-    login: string,
-    password: string,
-    passwordRepeat: string,
-};
 
-export type RegisterPersonActionCreator = (payload:{values:FormikValues, actions:FormikHelpers<RegisterValues>}) => void;
 
 const initialValues:RegisterValues = {
     login: '',
