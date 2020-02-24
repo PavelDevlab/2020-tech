@@ -4,7 +4,7 @@ import { appName } from 'app/config/index';
 import { RegisterPersonActionCreator } from 'app/components/auth/types/RegisterPage';
 import api from 'app/services/api';
 import history from 'app/redux/history';
-import {Record} from 'immutable';
+import Immutable, {Record} from 'immutable';
 
 import { SagaGenerator } from 'app/redux/types/saga';
 import { Action } from 'app/redux/types';
@@ -29,6 +29,7 @@ const TokenRecord = Record({
     expiresIn: "",
     localId: ""
 });
+
 const ReducerRecord = Record({
     token: new TokenRecord(),
     loading: true,
@@ -74,10 +75,7 @@ export interface RegisterResponse {
     localId: string
 };
 
-const aTokenRecord =  new TokenRecord();
-const b: string = new TokenRecord();
-
-export const storeToken = (tokenInfo: typeof aTokenRecord) => {
+export const storeToken = (tokenInfo: Immutable.Map<string, any>) => {
     return {
         type: STORE_TOKEN,
         payload: tokenInfo
@@ -92,30 +90,18 @@ function* registerPersonSaga({ payload: values, meta: actions }:Action):SagaGene
 
     try {
         const tokenInfo = yield call(api.signUp, values);
+        // eslint-disable-next-line no-console
+        console.log(tokenInfo);
         yield put(storeToken(new TokenRecord(tokenInfo)));
 
         yield call(resetForm);
         yield call([history, "push"], {pathname: "/dashboard"});
     } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(e);
         yield call(setErrors, { authentication: e.message });
         yield call(setSubmitting, false);
     }
-    /*
-    try {
-        // Connect to our "API" and get an API token for future API calls.
-        const response = yield call(loginAPI, values.username, values.password);
-        yield call(storeToken, response);
-        // Reset the form just to be clean, then send the user to our Dashboard which "requires"
-        // authentication.
-        yield call(resetForm);
-        yield call([history, "navigate"], "dashboard");
-    } catch (e) {
-        // If our API throws an error we will leverage Formik's existing error system to pass it along
-        // to the view layer, as well as clearing the loading indicator.
-        yield call(setErrors, { authentication: e.message });
-        yield call(setSubmitting, false);
-    }
-     */
 }
 
 

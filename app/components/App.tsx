@@ -1,19 +1,36 @@
 import React, { Component } from 'react';
 import AppLayout from 'components/AppLayout';
-// import PropTypes from 'prop-types';
-// import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
-import { renderRoutes } from 'react-router-config';
-import { RouteConfig } from 'react-router-config';
+import { Switch, Route } from 'react-router';
 
 import {connect} from 'app/extentions/react-redux'; // todo: Make it works.
 
 // import { getRouterLocation } from './selectors/router';
-
+/*
 export interface AppComponentProps {
     // location: any,
     route: RouteConfig
 }
+*-/
+ */
+
+import Temp from './Temp';
+import NotFound from './NotFound';
+import RegisterPage from './auth/RegisterPage';
+import LoginPage from './auth/LoginPage';
+import RecoverPage from './auth/RecoverPage';
+import Dashboard from './shop/Dashboard';
+// import { RouteConfig } from 'react-router-config';
+
+/*
+import Loadable from 'react-loadable';
+import Loading from 'components/Loading';
+
+const UsersLoadable = Loadable({
+  loader: () => import('./../../pages/Users'),
+  loading: Loading,
+});
+*/
 
 @(connect(() => ({
     // location: getRouterLocation(state), todo: Make it.
@@ -42,12 +59,30 @@ class App extends Component<AppComponentProps, {}> {
     }
 
     render() {
-        const { route } = this.props;
 
         return (
             <AppLayout>
                 {this.renderSiteMeta()}
-                {renderRoutes(route.routes)}
+                <Switch>
+                    <Route exact path="/">
+                        <Temp />
+                    </Route>
+                    <Route path="/register">
+                        <RegisterPage />
+                    </Route>
+                    <Route path="/login">
+                        <LoginPage />
+                    </Route>
+                    <Route path="/recover">
+                        <RecoverPage />
+                    </Route>
+                    <Route path="/dashboard">
+                        <Dashboard />
+                    </Route>
+                    <Route path="*">
+                        <NotFound />
+                    </Route>
+                </Switch>
             </AppLayout>
         );
     }

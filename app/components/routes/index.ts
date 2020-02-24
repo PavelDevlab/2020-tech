@@ -8,7 +8,7 @@ import RegisterPage from 'components/auth/RegisterPage';
 import LoginPage from 'components/auth/LoginPage';
 import RecoverPage from 'components/auth/RecoverPage';
 import Dashboard from 'components/shop/Dashboard';
-import { RouteConfig } from 'react-router-config';
+// import { RouteConfig } from 'react-router-config';
 
 /*
 import Loadable from 'react-loadable';

@@ -9,9 +9,9 @@ import { registerPerson } from 'app/redux/ducks/auth';
 
 import { FormikValues, FormikHelpers } from 'formik/dist/types';
 import { RegisterValues } from './types/RegisterPage';
+import {connect} from 'react-redux';
 
-import {connect} from 'app/extentions/react-redux'; // todo: Make it works.
-
+// import {connect} from 'app/extentions/react-redux'; // todo: Make it works.
 
 
 const initialValues:RegisterValues = {
@@ -38,20 +38,20 @@ const validationSchema = Yup.object().shape({
 
 
 const propTypes = {
-    onSubmit: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired
 };
 
-const storeEnhancer = connect(
-    null,
-    (dispatch) =>
-        ({
-            onSubmit(values:FormikValues, actions:FormikHelpers<RegisterValues>) {
-                dispatch((registerPerson({ values, actions })));
-            }
-        })
-);
+const defaultProps = {
+    onSubmit: () => null
+};
 
-const RegisterPage:FunctionComponent<InferProps<typeof propTypes>> = ({ onSubmit }) => {
+type RegisterPageProps = InferProps<typeof propTypes>;
+
+// const storeEnhancer = ;
+
+
+
+const RegisterPage:FunctionComponent<RegisterPageProps> = ({ onSubmit }: RegisterPageProps) => {
 
     /*
     const handleSubmit = useCallback((event) => {
@@ -102,13 +102,24 @@ const RegisterPage:FunctionComponent<InferProps<typeof propTypes>> = ({ onSubmit
     );
 };
 
-
 RegisterPage.propTypes = propTypes;
+RegisterPage.defaultProps = defaultProps;
 
-RegisterPage.defaultProps = {
-    onSubmit: () => null
-};
+export default compose(
+    connect(
+        null,
+        (dispatch) => {
+            return {
+                onSubmit(values:FormikValues, actions:FormikHelpers<RegisterValues>) {
+                    dispatch((registerPerson({ values, actions })));
+                }
+            };
+        }
+    )(RegisterPage as any)
+);
 
+/*
 export default compose(
     storeEnhancer
 )(RegisterPage);
+ */

@@ -1,5 +1,5 @@
 import React, { Component, ComponentType } from "react";
-import { asyncConnect } from 'redux-connect';
+// import { asyncConnect } from 'redux-connect';
 import { compose } from 'redux';
 
 import withStyles from 'isomorphic-style-loader/withStyles';
@@ -33,9 +33,9 @@ class Temp extends Component {
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
-
 export default compose(
     (withStyles(s) as Func1<ComponentType, ComponentType>),
+/*
     (asyncConnect([
         {
             key: 'usersFromServer',
@@ -44,4 +44,5 @@ export default compose(
             },
         },
     ]) as Func1<ComponentType, ComponentType>),
+ */
 )(Temp);

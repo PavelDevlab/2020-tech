@@ -10,14 +10,16 @@ import React from 'react';
 import express from 'express';
 import { createMemoryHistory } from 'history';
 import ReactDOMServer from 'react-dom/server';
+import { match } from 'react-router';
 import { StaticRouter } from 'react-router-dom';
+import App from 'app/components/App';
 
 import createAppStore from 'app/redux';
 import { parse as parseUrl } from 'url';
-import { ReduxAsyncConnect, loadOnServer } from 'redux-connect';
+// import { ReduxAsyncConnect, loadOnServer } from 'redux-connect';
 import StyleContext from 'isomorphic-style-loader/StyleContext';
 
-import routes from 'app/components/routes';
+// import routes from 'app/components/routes';
 import sagas from 'app/redux/saga';
 
 const PORT = process.env.PORT || 3001;
@@ -42,78 +44,83 @@ app.get('*', (req, res) => {
   const location = parseUrl(url);
   const helpers = {};
   const indexFile = path.resolve('./build/public/main.html');
+
+  console.log("Before render");
   /*
         todo: Run sagas here is not true way.
               Run sagas under configureStore and
               return a new promise for finish store init.
   */
-  store
-    .runSaga(sagas)
-    .toPromise()
-    .then(() => {
-      return loadOnServer({ store, location, routes, helpers }).then(() => {
-        /*
-            todo: resolve this moment with context
-                  its never pass to redirect here.
-                  React router doc for help.
-        */
-        const context = {};
-        /*
-            todo: resolve this moment with context
-            if (context.url) {
-              req.header('Location', context.url);
-              return res.send(302)
-            }
-         */
-        const css = new Set(); // CSS for all rendered React components
-        // eslint-disable-next-line no-underscore-dangle
-        const insertCss = (...styles: any[]) =>
+  /*
+    store
+      .runSaga(sagas)
+      .toPromise()
+      .then(() => {
+   */
+
+
+      /*
+          todo: resolve this moment with context
+                its never pass to redirect here.
+                React router doc for help.
+      */
+      const context = {};
+      /*
+          todo: resolve this moment with context
+          if (context.url) {
+            req.header('Location', context.url);
+            return res.send(302)
+          }
+       */
+      const css = new Set(); // CSS for all rendered React components
+      // eslint-disable-next-line no-underscore-dangle
+      const insertCss = (...styles: any[]) =>
           styles.forEach(style => css.add(style._getCss()));
-        // todo: Create a type with a method only for this case.
-        const appContent = ReactDOMServer.renderToString(
+      // todo: Create a type with a method only for this case.
+      const appContent = ReactDOMServer.renderToString(
           <StyleContext.Provider value={{ insertCss }}>
             <Provider key="provider" store={store}>
               <StaticRouter context={context} location={location}>
-                <ReduxAsyncConnect helpers={helpers} routes={routes} />
+                <App />
               </StaticRouter>
             </Provider>
           </StyleContext.Provider>
-        );
-        const helmet = Helmet.renderStatic(); // todo: does not work fix it.
-        fs.readFile(indexFile, 'utf8', (err, data) => {
-          if (err) {
-            // eslint-disable-next-line no-console
-            console.log('Something went wrong:', err);
-            return res.status(500).send('Oops, better luck next time!');
-          }
-          // todo: Strange way to template a file. Use real templates or template-like placeholders.
-          data = data.replace('__STYLES__', [...css].join(''));
-          data = data.replace('__LOADER__', '');
-          data = data.replace(
+      );
+      const helmet = Helmet.renderStatic(); // todo: does not work fix it.
+      fs.readFile(indexFile, 'utf8', (err, data) => {
+        if (err) {
+          // eslint-disable-next-line no-console
+          console.log('Something went wrong:', err);
+          return res.status(500).send('Oops, better luck next time!');
+        }
+        // todo: Strange way to template a file. Use real templates or template-like placeholders.
+        data = data.replace('__STYLES__', [...css].join(''));
+        data = data.replace('__LOADER__', '');
+        data = data.replace(
             '<div id=app></div>',
             `<div id=app>${appContent}</div>`
-          );
-          data = data.replace(
+        );
+        data = data.replace(
             '<div id="app"></div>',
             `<div id="app">${appContent}</div>`
-          );
-          data = data.replace('<title></title>', helmet.title.toString());
-          // todo: does not work fix it.
-          data = data.replace(
+        );
+        data = data.replace('<title></title>', helmet.title.toString());
+        // todo: does not work fix it.
+        data = data.replace(
             '<meta name="description" content=""/>',
             helmet.meta.toString()
-          ); // todo: does not work fix it.
-          data = data.replace(
+        ); // todo: does not work fix it.
+        data = data.replace(
             '<script>__INITIAL_DATA__</script>',
             `<script>window.__INITIAL_DATA__ = ${JSON.stringify(
-              store.getState()
+                store.getState()
             )};</script>`
-          );
-          store.close();
-          return res.send(data);
-        });
+        );
+        store.close();
+        return res.send(data);
       });
-    });
+
+    //});
 });
 Loadable.preloadAll().then(() => {
   app.listen(PORT, () => {

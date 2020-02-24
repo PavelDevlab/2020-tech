@@ -16,7 +16,7 @@ type ApiConfig = {
 };
 
 function processCollectionResponse(response: QuerySnapshot) {
-    return response.docs.map((doc: QueryDocumentSnapshot) => ({ ...doc.data(), id: doc.id }))
+    return response.docs.map((doc: QueryDocumentSnapshot) => ({ ...doc.data(), id: doc.id }));
 }
 
 class ApiService {

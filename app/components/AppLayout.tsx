@@ -1,34 +1,36 @@
 
-import React, { Component, ReactElement } from 'react';
+import React from 'react';
 import {Link} from 'react-router-dom';
+import PropTypes, { InferProps } from "prop-types";
 
-type AppLayoutType = {
-    children: ReactElement[]
+const propTypes = {
+    children: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.node),
+        PropTypes.node
+    ]).isRequired
 };
 
-class AppLayout extends Component<AppLayoutType> {
+const AppLayout = (props:InferProps<typeof propTypes>) => {
 
-
-    render() {
-
-        return (
+    return (
+        <div>
             <div>
-                <div>
-                    <h3>Menu:</h3>
-                    <Link to="/login">
-                        login
-                    </Link>{' '}
-                    <Link to="/register">
-                        register
-                    </Link>{' '}
-                    <Link to="/recover">
-                        recover
-                    </Link>
-                </div>
-                {this.props.children}
+                <h3>Menu:</h3>
+                <Link to="/login">
+                    login
+                </Link>{' '}
+                <Link to="/register">
+                    register
+                </Link>{' '}
+                <Link to="/recover">
+                    recover
+                </Link>
             </div>
-        );
-    }
-}
+            {props.children}
+        </div>
+    );
+};
+
+AppLayout.propTypes = propTypes;
 
 export default AppLayout;
