@@ -3,6 +3,7 @@
 // import { ApplicationState } from "./rootReducer"; // todo: Apply true ApplicationState
 import {ReduxAppState as ApplicationState} from 'app/redux/reducer';
 
+// todo: Make it works.
 import * as React from "react";
 import {
     connect as originalConnect, MapDispatchToPropsParam, MapStateToPropsParam, MergeProps, Options

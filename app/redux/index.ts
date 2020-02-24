@@ -11,7 +11,7 @@ import { routerMiddleware } from 'connected-react-router/immutable';
 import createRootReducer, {ReduxAppState} from './reducer';
 
 // type Reducer<S> = <A extends Action>(state: S, action: A) => S;
-type EnhancedStore<S> = Store<S> & {
+export type EnhancedStore<S> = Store<S> & {
   runSaga: SagaMiddleware['run'];
   close: () => void;
   injectedReducers: {};

@@ -93,8 +93,8 @@
   "include": [
     "app/**/*.ts",
     "app/**/*.tsx",
-    "server.tsx",
-    "server.ts"
+    "server/**/*.ts",
+    "server/**/*.tsx"
   ],
   "exclude": [
     "node_modules"

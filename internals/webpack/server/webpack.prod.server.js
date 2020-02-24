@@ -9,7 +9,7 @@ const rules = require('./rules');
 const nodeConf = {
   mode: 'production',
   target: 'node',
-  entry: './server.tsx',
+  entry: './server/index.ts',
   externals: [nodeExternals(), 'react-helmet'],
   output: {
     path: path.resolve('build'),
