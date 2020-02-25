@@ -1,6 +1,6 @@
 
 import { all, takeLeading, call, put } from 'redux-saga/effects';
-import { appName } from 'app/config/index';
+import { appName } from 'app/config';
 import {Record} from 'immutable';
 
 import { SagaGenerator } from 'app/redux/types/saga';
@@ -11,7 +11,7 @@ import { Action } from 'app/redux/types';
 /**
  * Constants
  * */
-export const moduleName = '';
+export const moduleName = 'main';
 const prefix = `${appName}/${moduleName}`;
 
 export const LOAD_MAIN_REQUEST = `${prefix}/LOAD_MAIN_REQUEST`;

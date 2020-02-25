@@ -1,6 +1,6 @@
 
 import { all, takeLatest, call, put } from 'redux-saga/effects';
-import { appName } from 'app/config/index';
+import { appName } from 'app/config';
 import { RegisterPersonActionCreator } from 'app/components/auth/types/RegisterPage';
 import api from 'app/services/api';
 import history from 'app/redux/history';

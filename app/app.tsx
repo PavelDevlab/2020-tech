@@ -3,14 +3,13 @@ import { hydrate } from 'react-dom';
 import { Provider } from 'react-redux';
 
 import { ConnectedRouter } from 'connected-react-router/immutable';
-import routes from 'app/components/routes';
-import {
-  ReduxAsyncConnect,
-} from 'redux-connect';
+import App from 'app/components/App';
+
 import StyleContext from 'isomorphic-style-loader/StyleContext';
 import 'app/services/api';
 import history from 'app/redux/history';
 
+import saga from 'app/redux/saga';
 import index from 'app/redux';
 
 
@@ -18,6 +17,7 @@ import index from 'app/redux';
 const initialState = !process.env.IS_SERVER ? (window as any).__INITIAL_DATA__ : {};
 
 const store = index(initialState, history);
+store.runSaga(saga);
 // todo: If the store has private info?
 // todo: Why we attach it to window?
 // Dont do this on production.
@@ -37,7 +37,7 @@ export const browserRender = () => {
     <StyleContext.Provider value={{ insertCss }}>
       <Provider key="provider" store={store} >
         <ConnectedRouter history={history}>
-          <ReduxAsyncConnect helpers={{}} routes={routes} />
+          <App />
         </ConnectedRouter>
       </Provider>
     </StyleContext.Provider>,

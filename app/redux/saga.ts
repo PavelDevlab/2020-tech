@@ -10,7 +10,6 @@ function* appSagas() {
     ]);
 }
 
-
 export function* loadInitialData() {
     yield put({type: 'USELESS_ACTION'});
     return 'done';
