@@ -30,13 +30,13 @@ const TokenRecord = Record({
     localId: ""
 });
 
-const ReducerRecord = Record({
+const AuthRecord = Record({
     token: new TokenRecord(),
     loading: true,
     error: null
 });
 
-export default function reducer(state= new ReducerRecord(), action:Action) {
+export default function reducer(state = new AuthRecord(), action:Action) {
     const {type, payload} = action;
 
     switch (type) {
