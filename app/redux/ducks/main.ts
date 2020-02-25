@@ -1,7 +1,7 @@
 
-import { all, takeLeading, call, put } from 'redux-saga/effects';
+import { all, takeLeading, call, put, select } from 'redux-saga/effects';
 import { appName } from 'app/config';
-import {Record} from 'immutable';
+import Immutable, {Record} from 'immutable';
 
 import { SagaGenerator } from 'app/redux/types/saga';
 import { Action } from 'app/redux/types';
@@ -41,7 +41,7 @@ export default function reducer(state = new AuthRecord(), action:Action) {
 /**
  * Selectors
  * */
-//export const peopleListSelector = (state) => state[moduleName].entities.valueSeq().toArray();
+export const mainInfoSelector = (state:Immutable.Map<string, any>) => state.get(moduleName).get('info');
 
 /**
  * Action Creators
@@ -70,10 +70,12 @@ function sleep() {
 /**
  * Sagas
  * */
-
 function* loadMainInfo():SagaGenerator {
-    yield call(sleep);
-    yield put(createLoadMainSucceed("Main unique info. -_-"));
+    const currentInfo = yield select(mainInfoSelector);
+    if (!currentInfo) {
+        yield call(sleep);
+        yield put(createLoadMainSucceed("Main unique info. -_-"));
+    }
 }
 
 

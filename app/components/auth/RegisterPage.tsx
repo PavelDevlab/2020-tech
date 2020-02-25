@@ -56,8 +56,6 @@ const RegisterPage:FunctionComponent<RegisterPageProps> = ({ onSubmit }: Registe
     /*
     const handleSubmit = useCallback((event) => {
         event.preventDefault();
-        // eslint-disable-next-line no-console
-        console.log('test!');
     }, []);
     */
 

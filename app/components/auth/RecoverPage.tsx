@@ -4,8 +4,6 @@ const RecoverPage = () => {
 
     const handleSubmit = useCallback((event) => {
         event.preventDefault();
-        // eslint-disable-next-line no-console
-        console.log('test!');
     }, []);
 
     return (

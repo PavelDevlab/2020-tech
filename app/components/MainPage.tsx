@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { compose } from 'redux';
 import { createLoadMainRequest } from 'app/redux/ducks/main';
 import Immutable from 'immutable';
+import { useIsomorphicEffect } from 'app/extentions/react';
+import { mainInfoSelector } from 'app/redux/ducks/main';
 
 // import withStyles from 'isomorphic-style-loader/withStyles';
 import s from './style.scss';
@@ -24,7 +26,7 @@ type MainPageProps = InferProps<typeof propTypes>;
 
 const MainPage = ({info, loadMainInfo}:MainPageProps) => {
 
-    useEffect(() => {
+    useIsomorphicEffect(() => {
         loadMainInfo();
     }, []);
 
@@ -44,7 +46,7 @@ export default compose(
     // (withStyles(s) as any), // todo: Fix this. Recover styles.
     connect((state:Immutable.Map<string, any>) => {
             return {
-                info: state.get('main').get('info'),
+                info: mainInfoSelector(state),
             };
         }, (dispatch) => ({
             loadMainInfo() {
