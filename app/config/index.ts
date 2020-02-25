@@ -1,7 +1,7 @@
 
 import { firebaseConfig as rawFirebaseConfig} from './firebaseConfig';
 
-const regToReplace = /$$_$$/gi;
+const regToReplace = /\$\$_\$\$/gi;
 
 const clean = (obj:{}) => {
   return Object.keys(obj).reduce((result:any, key) => {

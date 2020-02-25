@@ -2,4 +2,3 @@
 /build
 /_arh
 /node_modules
-/app/config/firebaseConfig.ts
