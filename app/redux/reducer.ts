@@ -4,6 +4,7 @@ import { fromJS } from 'immutable';
 import { connectRouter } from 'connected-react-router/immutable';
 import { History } from 'history';
 import authReducer, {moduleName as authModuleName} from './ducks/auth';
+import mainReducer, {moduleName as mainModuleName} from './ducks/main';
 
 // import appReducer from 'temp/containers/App/reducers/app';
 
@@ -23,7 +24,8 @@ setToMutableStateFunc((immutableState:any) => immutableState.toJS());
 const rootReducerCreator = (history:History) => combineReducers({
 //  reduxAsyncConnect,
   router: connectRouter(history),
-  [authModuleName]: authReducer
+  [authModuleName]: authReducer,
+  [mainModuleName]: mainReducer,
 });
 
 export type ReduxAppState = ReduxState<typeof rootReducerCreator>;
