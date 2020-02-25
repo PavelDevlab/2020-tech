@@ -3,7 +3,7 @@ import AppLayout from 'components/AppLayout';
 import { Helmet } from 'react-helmet';
 import { Switch, Route } from 'react-router';
 
-import Temp from './Temp';
+import MainPage from './MainPage';
 import NotFound from './NotFound';
 import RegisterPage from './auth/RegisterPage';
 import LoginPage from './auth/LoginPage';
@@ -31,7 +31,7 @@ const App = ():ReactElement => {
             <SiteMeta />
             <Switch>
                 <Route exact path="/">
-                    <Temp />
+                    <MainPage />
                 </Route>
                 <Route path="/register">
                     <RegisterPage />
