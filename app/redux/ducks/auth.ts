@@ -1,5 +1,5 @@
 
-import { all, takeLatest, call, put } from 'redux-saga/effects';
+import { all, takeLeading, call, put } from 'redux-saga/effects';
 import { appName } from 'app/config';
 import { RegisterPersonActionCreator } from 'app/components/auth/types/RegisterPage';
 import api from 'app/services/api';
@@ -99,7 +99,7 @@ function* registerPersonSaga({ payload: values, meta: actions }:Action):SagaGene
     } catch (e) {
         // eslint-disable-next-line no-console
         console.log(e);
-        yield call(setErrors, { authentication: e.message });
+        yield call(setErrors, { form: e.message });
         yield call(setSubmitting, false);
     }
 }
@@ -107,7 +107,7 @@ function* registerPersonSaga({ payload: values, meta: actions }:Action):SagaGene
 
 export function* saga():SagaGenerator {
     yield all([
-        takeLatest(REGISTER_PERSON_REQUEST, registerPersonSaga)
+        takeLeading(REGISTER_PERSON_REQUEST, registerPersonSaga)
     ]);
     // as any
 }

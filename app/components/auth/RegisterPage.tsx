@@ -1,6 +1,6 @@
 
 import React, { FunctionComponent } from 'react';
-import { Formik, Field } from 'formik';
+import { Form, Formik, Field } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import * as Yup from 'yup';
 import { compose } from 'redux';
@@ -18,7 +18,8 @@ import {validateWithYup} from 'app/services/utils';
 const initialValues:RegisterValues = {
     login: '',
     password: '',
-    passwordRepeat: '',
+    passwordRepeat: ''/*,
+     form: '' */
 };
 const loginSchema = Yup.string().email()
   .required("Required");
@@ -34,6 +35,21 @@ const validatePassword = validateWithYup((value) => {
 const validatePasswordRepeat = (password:string, passwordRepeat:string):boolean|string => {
     return password === passwordRepeat || "Passwords is not matches";
 };
+/*
+const validationSchema = Yup.object().shape({
+    login: loginSchema,
+    password: passwordSchema,
+    passwordRepeat: Yup.string()
+      .test({
+          test: function (value) {
+              return value === this.parent.password;
+          },
+          message: "Passwords is not matches"
+      })
+      .required("Required"),
+});
+
+ */
 
 
 const propTypes = {
@@ -57,14 +73,14 @@ const RegisterPage:FunctionComponent<RegisterPageProps> = ({ onSubmit }: Registe
             onSubmit={ onSubmit }
         >
             {(props:FormikProps<RegisterValues>) => (
-                <form onSubmit={props.handleSubmit}>
+                <Form>
                     <div>
                         <label>login</label>
                         <Field
                             type="text"
                             name="login"
                             validate={validateLogin}
-                            onBlur={() => props.validateField("login")}
+                            /* onBlur={() => props.validateField("login")} */
                         />
                     </div>
                     {props.errors.login && <div className="field-error">{props.errors.login}</div>}
@@ -74,7 +90,7 @@ const RegisterPage:FunctionComponent<RegisterPageProps> = ({ onSubmit }: Registe
                             type="password"
                             name="password"
                             validate={validatePassword}
-                            onBlur={() => props.validateField("password")}
+                            /*onBlur={() => props.validateField("password")}*/
                         />
                     </div>
                     {props.errors.password && <div className="field-error">{props.errors.password}</div>}
@@ -84,14 +100,19 @@ const RegisterPage:FunctionComponent<RegisterPageProps> = ({ onSubmit }: Registe
                             type="password"
                             name="passwordRepeat"
                             validate={(value: any) => validatePasswordRepeat(props.values.password, value)}
-                            onBlur={() => props.validateField("passwordRepeat")}
+                            /* onBlur={() => props.validateField("passwordRepeat")} */
                         />
                     </div>
                     {props.errors.passwordRepeat && <div className="field-error">{props.errors.passwordRepeat}</div>}
                     <button type="submit" disabled={props.isSubmitting}>
                         Submit
                     </button>
-                </form>
+                    {/*
+                    <div>
+                        {props.errors.form && <div className="field-error">{props.errors.form}</div>}
+                    </div>
+                    */}
+                </Form>
             )}
         </Formik>
     );
