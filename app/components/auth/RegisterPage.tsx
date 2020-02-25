@@ -10,6 +10,7 @@ import { registerPerson } from 'app/redux/ducks/auth';
 import { FormikValues, FormikHelpers } from 'formik/dist/types';
 import { RegisterValues } from './types/RegisterPage';
 import {connect} from 'react-redux';
+import {validateWithYup} from 'app/services/utils';
 
 // import {connect} from 'app/extentions/react-redux'; // todo: Make it works.
 
@@ -19,22 +20,20 @@ const initialValues:RegisterValues = {
     password: '',
     passwordRepeat: '',
 };
-
-const validationSchema = Yup.object().shape({
-    login: Yup.string()
-        .email()
-        .required("Required"),
-    password: Yup.string()
-        .required("Required"),
-    passwordRepeat: Yup.string()
-        .test({
-            test: function (value) {
-                return value === this.parent.password;
-            },
-            message: "Passwords is not matches"
-        })
-        .required("Required"),
+const loginSchema = Yup.string().email()
+  .required("Required");
+const validateLogin = validateWithYup((value) => {
+    return loginSchema.validateSync(value);
 });
+
+const passwordSchema = Yup.string().required("Required");
+const validatePassword = validateWithYup((value) => {
+    return passwordSchema.validateSync(value);
+});
+
+const validatePasswordRepeat = (password:string, passwordRepeat:string):boolean|string => {
+    return password === passwordRepeat || "Passwords is not matches";
+};
 
 
 const propTypes = {
@@ -47,23 +46,15 @@ const defaultProps = {
 
 type RegisterPageProps = InferProps<typeof propTypes>;
 
-// const storeEnhancer = ;
-
-
 
 const RegisterPage:FunctionComponent<RegisterPageProps> = ({ onSubmit }: RegisterPageProps) => {
 
-    /*
-    const handleSubmit = useCallback((event) => {
-        event.preventDefault();
-    }, []);
-    */
-
     return (
         <Formik
+            validateOnBlur={false}
+            validateOnChange={false}
             initialValues={initialValues}
             onSubmit={ onSubmit }
-            validationSchema={validationSchema}
         >
             {(props:FormikProps<RegisterValues>) => (
                 <form onSubmit={props.handleSubmit}>
@@ -72,6 +63,8 @@ const RegisterPage:FunctionComponent<RegisterPageProps> = ({ onSubmit }: Registe
                         <Field
                             type="text"
                             name="login"
+                            validate={validateLogin}
+                            onBlur={() => props.validateField("login")}
                         />
                     </div>
                     {props.errors.login && <div className="field-error">{props.errors.login}</div>}
@@ -80,6 +73,8 @@ const RegisterPage:FunctionComponent<RegisterPageProps> = ({ onSubmit }: Registe
                         <Field
                             type="password"
                             name="password"
+                            validate={validatePassword}
+                            onBlur={() => props.validateField("password")}
                         />
                     </div>
                     {props.errors.password && <div className="field-error">{props.errors.password}</div>}
@@ -88,6 +83,8 @@ const RegisterPage:FunctionComponent<RegisterPageProps> = ({ onSubmit }: Registe
                         <Field
                             type="password"
                             name="passwordRepeat"
+                            validate={(value: any) => validatePasswordRepeat(props.values.password, value)}
+                            onBlur={() => props.validateField("passwordRepeat")}
                         />
                     </div>
                     {props.errors.passwordRepeat && <div className="field-error">{props.errors.passwordRepeat}</div>}
@@ -115,9 +112,3 @@ export default compose(
         }
     )(RegisterPage as any)
 );
-
-/*
-export default compose(
-    storeEnhancer
-)(RegisterPage);
- */

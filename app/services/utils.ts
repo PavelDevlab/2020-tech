@@ -9,3 +9,13 @@ export const once = (callback: AnyFunction):AnyFunction => {
     targetCallback = callbackStub;
   };
 };
+
+export const validateWithYup:(arg0:AnyFunction) => ((arg0:any) => any) = (validate) => {
+    return (value) => {
+      try {
+        validate(value);
+      } catch (error) {
+        return error.errors[0] || 'Error';
+      }
+    };
+};
