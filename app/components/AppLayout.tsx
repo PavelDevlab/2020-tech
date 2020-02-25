@@ -16,6 +16,9 @@ const AppLayout = (props:InferProps<typeof propTypes>) => {
         <div>
             <div>
                 <h3>Menu:</h3>
+                <Link to="/">
+                    main
+                </Link>{' '}
                 <Link to="/login">
                     login
                 </Link>{' '}
