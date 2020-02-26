@@ -53,26 +53,12 @@ const RegisterPage:FunctionComponent<RegisterPageProps> = ({ onSubmit }: Registe
             onSubmit={ onSubmit }
         >
             {(props:FormikProps<RegisterValues>) => (
-                <Form /*onSubmit={(e) => {
-                  e.preventDefault();
-                  console.log("onSubmit");
-                  props.submitForm()
-                    .then((...args) => {
-                      console.log('.then');
-                      console.log(args);
-                    }).catch((...errors) => {
-                      console.log('.catch');
-                      console.log(errors);
-                    });
-                  props.handleSubmit();
-                }}*/>
+                <Form>
                     <div>
                         <label>login</label>
                         <Field
                             type="text"
                             name="login"
-                            /*validate={validateLogin}*/
-                            /* onBlur={() => props.validateField("login")} */
                         />
                     </div>
                     <ErrorMessage name="login" />
@@ -81,8 +67,6 @@ const RegisterPage:FunctionComponent<RegisterPageProps> = ({ onSubmit }: Registe
                         <Field
                             type="password"
                             name="password"
-                            /*validate={validatePassword}*/
-                            /*onBlur={() => props.validateField("password")}*/
                         />
                     </div>
                     <ErrorMessage name="password" />
@@ -103,11 +87,6 @@ const RegisterPage:FunctionComponent<RegisterPageProps> = ({ onSubmit }: Registe
                     <br />
                     <br />
                     <ErrorMessage name="form" />
-                    {/*
-                      <div>
-                          {props.errors.form && <div className="field-error">{props.errors.form}</div>}
-                      </div>
-                    */}
                 </Form>
             )}
         </Formik>
