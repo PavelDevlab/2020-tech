@@ -25,6 +25,7 @@ export const STORE_TOKEN = `${prefix}/STORE_TOKEN`;
 export const STORE_USER = `${prefix}/STORE_USER`;
 export const SIGN_IN_SUCCEED = `${prefix}/SIGN_IN_SUCCEED`;
 export const SIGN_OUT = `${prefix}/SIGN_OUT`;
+export const SIGN_OUT_REQUEST = `${prefix}/SIGN_OUT_REQUEST`;
 
 /**
  * Reducer
@@ -57,7 +58,7 @@ export default function reducer(state = new AuthRecord(), action:Action) {
             return state.set('loading', false)
                         .set('token', payload);
         case SIGN_IN_SUCCEED:
-            return state.set('signedIn', false)
+            return state.set('signedIn', true)
                         .set('user', payload);
         case SIGN_OUT:
             return state.set('signedIn', false)
@@ -120,6 +121,12 @@ export const signOut = () => {
     };
 };
 
+export const singOutRequest = () => {
+    return {
+        type: SIGN_OUT_REQUEST
+    };
+};
+
 /**
  * Sagas
  * */
@@ -142,8 +149,8 @@ function* loginPersonSaga({ payload: values, meta: actions }:Action):SagaGenerat
     const { resetForm, setErrors, setSubmitting } = actions;
 
     try {
-        /*const loginInfo = */yield call(api.signIn, values);
-        //yield put(storeUser(tokenInfo.user));
+        const loginInfo = yield call(api.signIn, values);
+        yield put(signInSucceed(loginInfo.user));
 
         yield call(resetForm);
         yield call([history, "push"], {pathname: "/dashboard"});
@@ -151,6 +158,18 @@ function* loginPersonSaga({ payload: values, meta: actions }:Action):SagaGenerat
         yield call(setErrors, { form: e.message });
         yield call(setSubmitting, false);
     }
+}
+
+function* signOutSaga() {
+    // while(false) {
+        const result = yield call(api.signOut);
+        console.log(result);
+    // }
+
+    /*
+        console.log(result);
+        yield put(signOut());
+     */
 }
 
 
@@ -189,6 +208,7 @@ export function* saga():SagaGenerator {
     yield all([
         takeLeading(REGISTER_PERSON_REQUEST, registerPersonSaga),
         takeLeading(LOGIN_PERSON_REQUEST, loginPersonSaga),
+        takeLeading(SIGN_OUT_REQUEST, signOutSaga),
         fork(watchChanelAuthChangeSaga)
     ]);
 }

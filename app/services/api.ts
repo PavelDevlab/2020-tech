@@ -48,6 +48,10 @@ class ApiService {
         return this.fb.auth().signInWithEmailAndPassword(email, password);
     }
 
+    signOut = () => {
+        return this.fb.auth().signOut();
+    }
+
     onAuthChange = (callback: ((a: fb.User | null) => any)) => {
       return this.fb.auth().onAuthStateChanged(callback);
     }

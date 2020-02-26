@@ -2,8 +2,8 @@ import React, { ReactElement } from 'react';
 import AppLayout from 'components/AppLayout';
 import { Helmet } from 'react-helmet';
 import { Switch, Route } from 'react-router';
-import { signedInSelector } from 'app/redux/ducks/auth';
-import Immutable from 'immutable';
+// import { signedInSelector } from 'app/redux/ducks/auth';
+// import Immutable from 'immutable';
 
 import MainPage from './MainPage';
 import NotFound from './NotFound';
@@ -11,10 +11,11 @@ import RegisterPage from './auth/RegisterPage';
 import LoginPage from './auth/LoginPage';
 // import RecoverPage from './auth/RecoverPage';
 import Dashboard from './shop/Dashboard';
+import { PrivateRoute, PublicRoute } from 'components/AuthRoute';
 
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import PropTypes, { InferProps } from 'prop-types';
+// import { connect } from 'react-redux';
+// import { compose } from 'redux';
+import PropTypes, { /* InferProps */ } from 'prop-types';
 
 const SiteMeta = ():ReactElement => {
     return (<Helmet
@@ -38,9 +39,9 @@ const defaultProps = {
   signedIn: false
 };
 
-type AppProps = InferProps<typeof propTypes>;
+// type AppProps = InferProps<typeof propTypes>;
 
-const App = ({signedIn}: AppProps):ReactElement => {
+const App = ():ReactElement => {
 
     return (
         <AppLayout>
@@ -49,26 +50,15 @@ const App = ({signedIn}: AppProps):ReactElement => {
               <Route exact path="/">
                 <MainPage />
               </Route>
-              {!signedIn &&
-                <>
-                  <Route path="/register">
-                    <RegisterPage />
-                  </Route>
-                  <Route path="/login">
-                    <LoginPage />
-                  </Route>
-                  {/* <Route path="/recover">
-                    <RecoverPage />
-                  </Route> */}
-                </>
-              }
-              {signedIn &&
-                <>
-                  <Route path="/dashboard">
-                    <Dashboard />
-                  </Route>
-                </>
-              }
+              <PublicRoute path="/register">
+                <RegisterPage />
+              </PublicRoute>
+              <PublicRoute path="/login">
+                <LoginPage />
+              </PublicRoute>
+              <PrivateRoute path="/dashboard">
+                <Dashboard />
+              </PrivateRoute>
               <Route path="*">
                 <NotFound />
               </Route>
@@ -80,6 +70,9 @@ const App = ({signedIn}: AppProps):ReactElement => {
 App.defaultProps = defaultProps;
 App.propTypes = propTypes;
 
+
+export default App;
+/*
 export default compose(
   connect((state: Immutable.Map<string, any>) => {
     return {
@@ -87,3 +80,4 @@ export default compose(
     };
   })
 )(App as any);
+ */
