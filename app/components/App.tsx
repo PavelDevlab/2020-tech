@@ -2,13 +2,19 @@ import React, { ReactElement } from 'react';
 import AppLayout from 'components/AppLayout';
 import { Helmet } from 'react-helmet';
 import { Switch, Route } from 'react-router';
+import { signedInSelector } from 'app/redux/ducks/auth';
+import Immutable from 'immutable';
 
 import MainPage from './MainPage';
 import NotFound from './NotFound';
 import RegisterPage from './auth/RegisterPage';
 import LoginPage from './auth/LoginPage';
-import RecoverPage from './auth/RecoverPage';
+// import RecoverPage from './auth/RecoverPage';
 import Dashboard from './shop/Dashboard';
+
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import PropTypes, { InferProps } from 'prop-types';
 
 const SiteMeta = ():ReactElement => {
     return (<Helmet
@@ -24,33 +30,60 @@ const SiteMeta = ():ReactElement => {
     );
 };
 
-const App = ():ReactElement => {
+const propTypes = {
+  signedIn: PropTypes.bool.isRequired
+};
+
+const defaultProps = {
+  signedIn: false
+};
+
+type AppProps = InferProps<typeof propTypes>;
+
+const App = ({signedIn}: AppProps):ReactElement => {
 
     return (
         <AppLayout>
             <SiteMeta />
             <Switch>
-                <Route exact path="/">
-                    <MainPage />
-                </Route>
-                <Route path="/register">
+              <Route exact path="/">
+                <MainPage />
+              </Route>
+              {!signedIn &&
+                <>
+                  <Route path="/register">
                     <RegisterPage />
-                </Route>
-                <Route path="/login">
+                  </Route>
+                  <Route path="/login">
                     <LoginPage />
-                </Route>
-                <Route path="/recover">
+                  </Route>
+                  {/* <Route path="/recover">
                     <RecoverPage />
-                </Route>
-                <Route path="/dashboard">
+                  </Route> */}
+                </>
+              }
+              {signedIn &&
+                <>
+                  <Route path="/dashboard">
                     <Dashboard />
-                </Route>
-                <Route path="*">
-                    <NotFound />
-                </Route>
+                  </Route>
+                </>
+              }
+              <Route path="*">
+                <NotFound />
+              </Route>
             </Switch>
         </AppLayout>
     );
 };
 
-export default App;
+App.defaultProps = defaultProps;
+App.propTypes = propTypes;
+
+export default compose(
+  connect((state: Immutable.Map<string, any>) => {
+    return {
+      signedIn: signedInSelector(state),
+    };
+  })
+)(App as any);

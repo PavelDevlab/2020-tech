@@ -28,6 +28,9 @@ const AppLayout = (props:InferProps<typeof propTypes>) => {
                 <Link to="/recover">
                     recover
                 </Link>
+                <Link to="/dashboard">
+                    dashboard
+                </Link>
             </div>
             {props.children}
         </div>
