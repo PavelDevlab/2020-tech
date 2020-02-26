@@ -54,6 +54,9 @@ const RegisterPage:FunctionComponent<RegisterPageProps> = ({ onSubmit }: Registe
         >
             {(props:FormikProps<RegisterValues>) => (
                 <Form>
+                    <h2>
+                      Sign up
+                    </h2>
                     <div>
                         <label>login</label>
                         <Field

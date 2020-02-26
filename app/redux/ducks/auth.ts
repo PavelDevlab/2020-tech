@@ -6,6 +6,7 @@ import { LoginPersonActionCreator } from 'app/components/auth/types/LoginPage';
 import api from 'app/services/api';
 import history from 'app/redux/history';
 import Immutable, {Record} from 'immutable';
+import fb from 'firebase';
 
 import { SagaGenerator } from 'app/redux/types/saga';
 import { Action } from 'app/redux/types';
@@ -20,6 +21,7 @@ const prefix = `${appName}/${moduleName}`;
 export const REGISTER_PERSON_REQUEST = `${prefix}/REGISTER_PERSON_REQUEST`;
 export const LOGIN_PERSON_REQUEST = `${prefix}/LOGIN_PERSON_REQUEST`;
 export const STORE_TOKEN = `${prefix}/STORE_TOKEN`;
+export const STORE_USER = `${prefix}/STORE_USER`;
 
 /**
  * Reducer
@@ -34,6 +36,7 @@ const TokenRecord = Record({
 
 const AuthRecord = Record({
     token: new TokenRecord(),
+    user: null,
     loading: true,
     error: null
 });
@@ -43,11 +46,15 @@ export default function reducer(state = new AuthRecord(), action:Action) {
 
     switch (type) {
         case REGISTER_PERSON_REQUEST:
+        case LOGIN_PERSON_REQUEST:
             return state.set('loading', true)
                         .set('error', true);
         case STORE_TOKEN:
             return state.set('loading', false)
                         .set('token', payload);
+        case STORE_USER:
+            return state.set('loading', false)
+                        .set('user', payload);
         default:
             return state;
     }
@@ -92,6 +99,13 @@ export const storeToken = (tokenInfo: Immutable.Map<string, any>) => {
     };
 };
 
+export const storeUser = (user: fb.User) => {
+    return {
+        type: STORE_USER,
+        payload: user
+    };
+};
+
 /**
  * Sagas
  * */
@@ -105,7 +119,7 @@ function* registerPersonSaga({ payload: values, meta: actions }:Action):SagaGene
         yield put(storeToken(new TokenRecord(tokenInfo)));
 
         yield call(resetForm);
-        yield call([history, "push"], {pathname: "/dashboard"});
+        yield call([history, "push"], {pathname: "/login"});
     } catch (e) {
         yield call(setErrors, { form: e.message });
         yield call(setSubmitting, false);
@@ -119,7 +133,7 @@ function* loginPersonSaga({ payload: values, meta: actions }:Action):SagaGenerat
         const tokenInfo = yield call(api.signIn, values);
         // eslint-disable-next-line no-console
         console.log(tokenInfo);
-        yield put(storeToken(new TokenRecord(tokenInfo)));
+        yield put(storeUser(tokenInfo.user));
 
         yield call(resetForm);
         yield call([history, "push"], {pathname: "/dashboard"});
