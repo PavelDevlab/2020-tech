@@ -1,6 +1,6 @@
 
 import React, { FunctionComponent } from 'react';
-import { Form, Formik, Field } from 'formik';
+import { Form, Formik, Field, ErrorMessage } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import * as Yup from 'yup';
 import { compose } from 'redux';
@@ -10,9 +10,6 @@ import { registerPerson } from 'app/redux/ducks/auth';
 import { FormikValues, FormikHelpers } from 'formik/dist/types';
 import { RegisterValues } from './types/RegisterPage';
 import {connect} from 'react-redux';
-import {validateWithYup} from 'app/services/utils';
-
-// import {connect} from 'app/extentions/react-redux'; // todo: Make it works.
 
 
 const initialValues:RegisterValues = {
@@ -21,24 +18,11 @@ const initialValues:RegisterValues = {
     passwordRepeat: ''/*,
      form: '' */
 };
-const loginSchema = Yup.string().email()
-  .required("Required");
-const validateLogin = validateWithYup((value) => {
-    return loginSchema.validateSync(value);
-});
 
-const passwordSchema = Yup.string().required("Required");
-const validatePassword = validateWithYup((value) => {
-    return passwordSchema.validateSync(value);
-});
-
-const validatePasswordRepeat = (password:string, passwordRepeat:string):boolean|string => {
-    return password === passwordRepeat || "Passwords is not matches";
-};
-/*
 const validationSchema = Yup.object().shape({
-    login: loginSchema,
-    password: passwordSchema,
+    login: Yup.string().email()
+      .required("Required"),
+    password: Yup.string().required("Required"),
     passwordRepeat: Yup.string()
       .test({
           test: function (value) {
@@ -48,9 +32,6 @@ const validationSchema = Yup.object().shape({
       })
       .required("Required"),
 });
-
- */
-
 
 const propTypes = {
     onSubmit: PropTypes.func.isRequired
@@ -67,50 +48,64 @@ const RegisterPage:FunctionComponent<RegisterPageProps> = ({ onSubmit }: Registe
 
     return (
         <Formik
-            validateOnBlur={false}
-            validateOnChange={false}
             initialValues={initialValues}
+            validationSchema={validationSchema}
             onSubmit={ onSubmit }
         >
             {(props:FormikProps<RegisterValues>) => (
-                <Form>
+                <Form /*onSubmit={(e) => {
+                  e.preventDefault();
+                  console.log("onSubmit");
+                  props.submitForm()
+                    .then((...args) => {
+                      console.log('.then');
+                      console.log(args);
+                    }).catch((...errors) => {
+                      console.log('.catch');
+                      console.log(errors);
+                    });
+                  props.handleSubmit();
+                }}*/>
                     <div>
                         <label>login</label>
                         <Field
                             type="text"
                             name="login"
-                            validate={validateLogin}
+                            /*validate={validateLogin}*/
                             /* onBlur={() => props.validateField("login")} */
                         />
                     </div>
-                    {props.errors.login && <div className="field-error">{props.errors.login}</div>}
+                    <ErrorMessage name="login" />
                     <div>
                         <label>password</label>
                         <Field
                             type="password"
                             name="password"
-                            validate={validatePassword}
+                            /*validate={validatePassword}*/
                             /*onBlur={() => props.validateField("password")}*/
                         />
                     </div>
-                    {props.errors.password && <div className="field-error">{props.errors.password}</div>}
+                    <ErrorMessage name="password" />
+
                     <div>
-                        <label>password repeat</label>
-                        <Field
-                            type="password"
-                            name="passwordRepeat"
-                            validate={(value: any) => validatePasswordRepeat(props.values.password, value)}
-                            /* onBlur={() => props.validateField("passwordRepeat")} */
-                        />
+                      <label>password repeat</label>
+                      <Field
+                        type="password"
+                        name="passwordRepeat"
+                      />
                     </div>
-                    {props.errors.passwordRepeat && <div className="field-error">{props.errors.passwordRepeat}</div>}
-                    <button type="submit" disabled={props.isSubmitting}>
+                    <ErrorMessage name="passwordRepeat" />
+
+                    <br />
+                    <br />
+                    <button type="submit"
+                            disabled={props.isSubmitting}>
                         Submit
                     </button>
                     {/*
-                    <div>
-                        {props.errors.form && <div className="field-error">{props.errors.form}</div>}
-                    </div>
+                      <div>
+                          {props.errors.form && <div className="field-error">{props.errors.form}</div>}
+                      </div>
                     */}
                 </Form>
             )}
