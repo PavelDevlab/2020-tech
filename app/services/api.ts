@@ -5,6 +5,7 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import {firebaseConfig} from 'app/config';
 import {RegisterValues} from 'app/components/auth/types/RegisterPage';
+import {LoginValues} from 'app/components/auth/types/LoginPage';
 
 type QuerySnapshot = fb.firestore.QuerySnapshot;
 type QueryDocumentSnapshot = fb.firestore.QueryDocumentSnapshot;
@@ -41,6 +42,10 @@ class ApiService {
 
     signUp = ({login: email, password}:RegisterValues) => {
         return this.fb.auth().createUserWithEmailAndPassword(email, password);
+    }
+
+    signIn = ({login: email, password}:LoginValues) => {
+        return this.fb.auth().signInWithEmailAndPassword(email, password);
     }
 
 /*

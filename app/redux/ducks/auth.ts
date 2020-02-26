@@ -2,6 +2,7 @@
 import { all, takeLeading, call, put } from 'redux-saga/effects';
 import { appName } from 'app/config';
 import { RegisterPersonActionCreator } from 'app/components/auth/types/RegisterPage';
+import { LoginPersonActionCreator } from 'app/components/auth/types/LoginPage';
 import api from 'app/services/api';
 import history from 'app/redux/history';
 import Immutable, {Record} from 'immutable';
@@ -17,6 +18,7 @@ export const moduleName = 'auth';
 const prefix = `${appName}/${moduleName}`;
 
 export const REGISTER_PERSON_REQUEST = `${prefix}/REGISTER_PERSON_REQUEST`;
+export const LOGIN_PERSON_REQUEST = `${prefix}/LOGIN_PERSON_REQUEST`;
 export const STORE_TOKEN = `${prefix}/STORE_TOKEN`;
 
 /**
@@ -67,6 +69,14 @@ export const registerPerson:RegisterPersonActionCreator = ({values, actions}) =>
     };
 };
 
+export const loginPerson:LoginPersonActionCreator = ({values, actions}) => {
+    return {
+        type: LOGIN_PERSON_REQUEST,
+        payload: values,
+        meta: actions
+    };
+};
+
 export interface RegisterResponse {
     idToken: string,
     email: string,
@@ -102,10 +112,27 @@ function* registerPersonSaga({ payload: values, meta: actions }:Action):SagaGene
     }
 }
 
+function* loginPersonSaga({ payload: values, meta: actions }:Action):SagaGenerator {
+    const { resetForm, setErrors, setSubmitting } = actions;
+
+    try {
+        const tokenInfo = yield call(api.signIn, values);
+        // eslint-disable-next-line no-console
+        console.log(tokenInfo);
+        yield put(storeToken(new TokenRecord(tokenInfo)));
+
+        yield call(resetForm);
+        yield call([history, "push"], {pathname: "/dashboard"});
+    } catch (e) {
+        yield call(setErrors, { form: e.message });
+        yield call(setSubmitting, false);
+    }
+}
+
 
 export function* saga():SagaGenerator {
     yield all([
-        takeLeading(REGISTER_PERSON_REQUEST, registerPersonSaga)
+        takeLeading(REGISTER_PERSON_REQUEST, registerPersonSaga),
+        takeLeading(LOGIN_PERSON_REQUEST, loginPersonSaga),
     ]);
-    // as any
 }
