@@ -15,8 +15,8 @@ import {connect} from 'react-redux';
 const initialValues:RegisterValues = {
     login: '',
     password: '',
-    passwordRepeat: ''/*,
-     form: '' */
+    passwordRepeat: '',
+    form: ''
 };
 
 const validationSchema = Yup.object().shape({
@@ -95,13 +95,14 @@ const RegisterPage:FunctionComponent<RegisterPageProps> = ({ onSubmit }: Registe
                       />
                     </div>
                     <ErrorMessage name="passwordRepeat" />
-
-                    <br />
                     <br />
                     <button type="submit"
                             disabled={props.isSubmitting}>
                         Submit
                     </button>
+                    <br />
+                    <br />
+                    <ErrorMessage name="form" />
                     {/*
                       <div>
                           {props.errors.form && <div className="field-error">{props.errors.form}</div>}

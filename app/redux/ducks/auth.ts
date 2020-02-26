@@ -97,8 +97,6 @@ function* registerPersonSaga({ payload: values, meta: actions }:Action):SagaGene
         yield call(resetForm);
         yield call([history, "push"], {pathname: "/dashboard"});
     } catch (e) {
-        // eslint-disable-next-line no-console
-        console.log(e);
         yield call(setErrors, { form: e.message });
         yield call(setSubmitting, false);
     }
