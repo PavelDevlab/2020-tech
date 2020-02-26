@@ -26,7 +26,8 @@ import { EnhancedStore } from 'app/redux';
 
 export interface RenderResult {
     status: number;
-    html: string;
+    html?: string;
+    url?: string;
 };
 
 export type SSRendererProps = {
@@ -37,6 +38,7 @@ class SSRenderer {
 
     private status:number;
     private html:string;
+    private context: {[key: string]: any};
 
     private css:Set<string>;
     private location: UrlWithStringQuery;
@@ -49,6 +51,7 @@ class SSRenderer {
         });
         const initialState = {};
 
+        this.context = {};
         this.status = 200;
         this.html = '';
         this.css = new Set();
@@ -57,14 +60,27 @@ class SSRenderer {
     }
 
     public render() {
-        const rootTask = this.store.runSaga(sagas);
-
-        this.renderAppContent();
-        this.store.close();
-
         return new Promise<RenderResult>((resolve) => {
+            const tryToFinishWithRedirect = () => {
+                if (this.context.url) {
+                    resolve({
+                        status: 302,
+                        url: this.context.url
+                    });
+                    return true;
+                }
+                return false;
+            };
+
+            const rootTask = this.store.runSaga(sagas);
+
+            this.renderAppContent();
+            this.store.close();
+            if (tryToFinishWithRedirect()) return;
+
             const finish = () => {
                 this.finishRender().then(() => {
+                    if (tryToFinishWithRedirect()) return;
                     resolve(this.getResult());
                 });
             };
@@ -87,7 +103,7 @@ class SSRenderer {
                   its never pass to redirect here.
                   React router doc for help.
         */
-        const context = {};
+        this.context = {};
         /*
             todo: resolve this moment with context
             if (context.url) {
@@ -103,7 +119,7 @@ class SSRenderer {
         const appContent = ReactDOMServer.renderToString(
             <StyleContext.Provider value={{ insertCss }}>
                 <Provider key="provider" store={this.store}>
-                    <StaticRouter context={context} location={this.location}>
+                    <StaticRouter context={this.context} location={this.location}>
                         <App />
                     </StaticRouter>
                 </Provider>

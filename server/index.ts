@@ -15,7 +15,11 @@ app.get('*', (req, res) => {
         url
     });
     renderer.render()
-        .then(({status, html}) => {
+        .then(({status, html, url}) => {
+            if (status === 302 && typeof url === 'string') {
+                res.redirect(status, url);
+                return;
+            }
             res.status(status).send(html);
         }).catch(() => {
             res.status(500).send('Oops, better luck next time!');
