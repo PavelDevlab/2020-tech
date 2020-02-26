@@ -1,5 +1,6 @@
 
-import { all, takeLeading, call, put } from 'redux-saga/effects';
+import { all, takeLeading, call, put, take, fork, cancel, cancelled } from 'redux-saga/effects';
+import { eventChannel } from 'redux-saga';
 import { appName } from 'app/config';
 import { RegisterPersonActionCreator } from 'app/components/auth/types/RegisterPage';
 import { LoginPersonActionCreator } from 'app/components/auth/types/LoginPage';
@@ -10,7 +11,7 @@ import fb from 'firebase';
 
 import { SagaGenerator } from 'app/redux/types/saga';
 import { Action } from 'app/redux/types';
-
+import { PRE_END } from 'app/redux/ducks/support';
 
 /**
  * Constants
@@ -22,6 +23,8 @@ export const REGISTER_PERSON_REQUEST = `${prefix}/REGISTER_PERSON_REQUEST`;
 export const LOGIN_PERSON_REQUEST = `${prefix}/LOGIN_PERSON_REQUEST`;
 export const STORE_TOKEN = `${prefix}/STORE_TOKEN`;
 export const STORE_USER = `${prefix}/STORE_USER`;
+export const SIGN_IN_SUCCEED = `${prefix}/SIGN_IN_SUCCEED`;
+export const SIGN_OUT = `${prefix}/SIGN_OUT`;
 
 /**
  * Reducer
@@ -38,7 +41,8 @@ const AuthRecord = Record({
     token: new TokenRecord(),
     user: null,
     loading: true,
-    error: null
+    error: null,
+    signedIn: false
 });
 
 export default function reducer(state = new AuthRecord(), action:Action) {
@@ -52,9 +56,12 @@ export default function reducer(state = new AuthRecord(), action:Action) {
         case STORE_TOKEN:
             return state.set('loading', false)
                         .set('token', payload);
-        case STORE_USER:
-            return state.set('loading', false)
+        case SIGN_IN_SUCCEED:
+            return state.set('signedIn', false)
                         .set('user', payload);
+        case SIGN_OUT:
+            return state.set('signedIn', false)
+                        .set('user', null);
         default:
             return state;
     }
@@ -63,7 +70,8 @@ export default function reducer(state = new AuthRecord(), action:Action) {
 /**
  * Selectors
  * */
-// export const peopleListSelector = (state) => state[moduleName].entities.valueSeq().toArray()
+const moduleSelector = (state:Immutable.Map<string, any>) => state.get(moduleName);
+export const signedInSelector = (state:Immutable.Map<string, any>) => moduleSelector(state).get('signedIn');
 
 /**
  * Action Creators
@@ -99,10 +107,16 @@ export const storeToken = (tokenInfo: Immutable.Map<string, any>) => {
     };
 };
 
-export const storeUser = (user: fb.User) => {
+export const signInSucceed = (user: fb.User) => {
     return {
-        type: STORE_USER,
+        type: SIGN_IN_SUCCEED,
         payload: user
+    };
+};
+
+export const signOut = () => {
+    return {
+        type: SIGN_OUT
     };
 };
 
@@ -114,8 +128,6 @@ function* registerPersonSaga({ payload: values, meta: actions }:Action):SagaGene
 
     try {
         const tokenInfo = yield call(api.signUp, values);
-        // eslint-disable-next-line no-console
-        console.log(tokenInfo);
         yield put(storeToken(new TokenRecord(tokenInfo)));
 
         yield call(resetForm);
@@ -130,10 +142,8 @@ function* loginPersonSaga({ payload: values, meta: actions }:Action):SagaGenerat
     const { resetForm, setErrors, setSubmitting } = actions;
 
     try {
-        const tokenInfo = yield call(api.signIn, values);
-        // eslint-disable-next-line no-console
-        console.log(tokenInfo);
-        yield put(storeUser(tokenInfo.user));
+        /*const loginInfo = */yield call(api.signIn, values);
+        //yield put(storeUser(tokenInfo.user));
 
         yield call(resetForm);
         yield call([history, "push"], {pathname: "/dashboard"});
@@ -144,9 +154,41 @@ function* loginPersonSaga({ payload: values, meta: actions }:Action):SagaGenerat
 }
 
 
+
+export const createAuthChannel = () => eventChannel((emit) => api.onAuthChange(user => emit({ user })));
+
+export const watchAuthChangeSaga = function * () {
+    let authChannel;
+    try {
+        authChannel = yield call(createAuthChannel);
+        while (true) {
+            const { user } = yield take(authChannel);
+            if (user) {
+                yield put(signInSucceed(user));
+            } else {
+                yield put(signOut());
+            }
+        }
+    } finally {
+        if (yield cancelled()) {
+           authChannel.close();
+        }
+    }
+};
+
+export const watchChanelAuthChangeSaga = function * () {
+    const watchAuthChangeSagaTask = yield fork(watchAuthChangeSaga);
+    while (true) {
+        yield take(PRE_END);
+        yield cancel(watchAuthChangeSagaTask);
+    }
+};
+
+
 export function* saga():SagaGenerator {
     yield all([
         takeLeading(REGISTER_PERSON_REQUEST, registerPersonSaga),
         takeLeading(LOGIN_PERSON_REQUEST, loginPersonSaga),
+        fork(watchChanelAuthChangeSaga)
     ]);
 }

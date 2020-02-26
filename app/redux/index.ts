@@ -2,6 +2,7 @@ import {createStore, applyMiddleware, compose, Store} from 'redux';
 import { fromJS } from 'immutable';
 import thunk from 'redux-thunk';
 import createSagaMiddleware, { END } from 'redux-saga';
+import { preEnd } from 'app/redux/ducks/support';
 import { History } from 'history';
 
 
@@ -24,7 +25,10 @@ export type EnhancedStore<S> = Store<S> & {
 const createEnhancedStore = (store:Store<ReduxAppState>, sagaMiddleWare:SagaMiddleware) => {
   const enhancedStore = store as EnhancedStore<ReduxAppState>;
   enhancedStore.runSaga = sagaMiddleWare.run;
-  enhancedStore.close = () => {store.dispatch(END);},
+  enhancedStore.close = () => {
+    store.dispatch(preEnd());
+    store.dispatch(END);
+  },
   enhancedStore.injectedReducers = {};
   return enhancedStore;
 };

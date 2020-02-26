@@ -48,6 +48,10 @@ class ApiService {
         return this.fb.auth().signInWithEmailAndPassword(email, password);
     }
 
+    onAuthChange = (callback: ((a: fb.User | null) => any)) => {
+      return this.fb.auth().onAuthStateChanged(callback);
+    }
+
 /*
     signIn = (email, password) => this.fb.auth().signInWithEmailAndPassword(email, password)
     signUp = (email, password) => this.fb.auth().createUserWithEmailAndPassword(email, password)
@@ -65,7 +69,7 @@ class ApiService {
         .collection('people')
         .onSnapshot(data => callback(processCollectionResponse(data)))
 
-    onAuthChange = (callback) => this.fb.auth().onAuthStateChanged(callback)
+
  */
 }
 
