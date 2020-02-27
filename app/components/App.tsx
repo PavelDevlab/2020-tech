@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import AppLayout from 'components/AppLayout';
+import AppLayout from 'app/components/AppLayout/index';
 import { Helmet } from 'react-helmet';
 import { Switch, Route } from 'react-router';
 // import { signedInSelector } from 'app/redux/ducks/auth';

@@ -1,0 +1,71 @@
+
+@import './reset-css';
+@import '../../../app/components/common/vars';
+
+body {
+  font-family: Arial, Verdana, "Trebuchet MS";
+  background: $light;
+}
+
+.layout {
+  &__header-inner {
+    min-width: 1000px;
+    margin: 0 auto;
+  }
+  &__header {
+    background: $pale;
+    // padding: 15px;
+    border-bottom: 1px solid $gray;
+    height: 60px;
+    display: flex;
+    align-items: stretch;
+
+  }
+  &__content {
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 50px 25px 25px 25px;
+
+  }
+}
+
+.nav {
+  display: flex;
+  justify-items: stretch;
+  &__logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $dark;
+    font-size: 25px;
+    font-weight: bold;
+    min-width: 100px;
+  }
+  &__menu {
+    flex-grow: 1;
+  }
+  &__side-menu {
+    border-left: 1px solid $gray;
+    min-width: 100px;
+  }
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  &__item {
+    color: $themeColor;
+    margin: 0 25px;
+    &:hover,
+    &:visited {
+      color: $themeColor;
+    }
+  }
+}
+
+.sheet {
+  padding: 20px;
+  background-color: $white;
+  border-radius: 15px;
+  box-shadow: 3px 5px rgba(0,0,0, 0.05);
+}

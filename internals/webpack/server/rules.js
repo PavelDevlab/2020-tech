@@ -1,4 +1,5 @@
 const autoprefixer = require('autoprefixer');
+const path = require('path');
 
 const rules = [
   {
@@ -41,7 +42,9 @@ const rules = [
           sourceMap: true,
         },
       },
-      'sass-loader',
+      {
+        loader: 'sass-loader'
+      },
     ],
   },
   {
