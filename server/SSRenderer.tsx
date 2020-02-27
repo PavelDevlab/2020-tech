@@ -22,6 +22,7 @@ import StyleContext from 'isomorphic-style-loader/StyleContext';
 
 // import routes from 'app/components/routes';
 import sagas from 'app/redux/saga';
+import  { Task } from 'redux-saga';
 import { EnhancedStore } from 'app/redux';
 
 export interface RenderResult {
@@ -39,7 +40,7 @@ class SSRenderer {
     private status:number;
     private html:string;
     private context: {[key: string]: any};
-
+    private rootTask: Task;
     private css:Set<string>;
     private location: UrlWithStringQuery;
     private store: EnhancedStore<ReduxAppState>;
@@ -59,58 +60,62 @@ class SSRenderer {
         this.location = parseUrl(url);
     }
 
-    public render() {
-        return new Promise<RenderResult>((resolve) => {
-            const tryToFinishWithRedirect = () => {
-                if (this.context.url) {
-                    resolve({
-                        status: 302,
-                        url: this.context.url
-                    });
-                    return true;
-                }
-                return false;
-            };
-
-            const rootTask = this.store.runSaga(sagas);
-
-            this.renderAppContent();
-            this.store.close();
-            if (tryToFinishWithRedirect()) return;
-
-            const finish = () => {
-                this.finishRender().then(() => {
-                    if (tryToFinishWithRedirect()) return;
-                    resolve(this.getResult());
-                });
-            };
-            rootTask.toPromise()
-                .then(finish)
-                .catch(finish);
-        });
+    private triggerSagaRender():string {
+        this.rootTask = this.store.runSaga(sagas);
+        const appContent = this.renderAppContent();
+        this.store.close();
+        return appContent;
     }
 
-    private getResult() {
+    private tryToFinishWithRedirect():(RenderResult|null) {
+        if (this.context.url) {
+            return {
+                status: 302,
+                url: this.context.url
+            };
+        }
+        return null;
+    }
+
+    public render() {
+        return Promise.resolve()
+          .then(() => this.triggerSagaRender())
+          .then(() => this.tryToFinishWithRedirect())
+          .then((result) => {
+                if (result) return result;
+                if (!result) return new Promise<RenderResult>((resolve) => {
+                    this.rootTask.toPromise()
+                      .then(() => {
+                          this.finishResult()
+                            .then(resolve);
+                      })
+                      .catch(() => {
+                          this.finishResult()
+                            .then(resolve);
+                      });
+                });
+          });
+    }
+
+    private finishResult():Promise<RenderResult> {
+        return new Promise((resolve) => resolve())
+          .then(() => this.finishRender())
+          .then(() => this.tryToFinishWithRedirect())
+          .then((result:RenderResult|null) => {
+              if (result) return result;
+              return this.getResult();
+          });
+    }
+
+    private getResult():RenderResult {
         return {
             status: this.status,
             html: this.html,
         };
     }
 
-    private renderAppContent() {
-        /*
-            todo: resolve this moment with context
-                  its never pass to redirect here.
-                  React router doc for help.
-        */
+    private renderAppContent():string {
         this.context = {};
-        /*
-            todo: resolve this moment with context
-            if (context.url) {
-              req.header('Location', context.url);
-              return res.send(302)
-            }
-         */
         this.css = new Set(); // CSS for all rendered React components
         // eslint-disable-next-line no-underscore-dangle
         const insertCss = (...styles: any[]) =>

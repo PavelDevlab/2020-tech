@@ -2,7 +2,7 @@ import 'babel-polyfill';
 
 import Loadable from 'react-loadable';
 import express from 'express';
-import SSRenderer from './SSRenderer';
+import SSRenderer/*, { RenderResult }*/ from './SSRenderer';
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -15,7 +15,7 @@ app.get('*', (req, res) => {
         url
     });
     renderer.render()
-        .then(({status, html, url}) => {
+        .then(({status, html, url}: any) => {
             if (status === 302 && typeof url === 'string') {
                 res.redirect(status, url);
                 return;
