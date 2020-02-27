@@ -2,7 +2,7 @@ import {createStore, applyMiddleware, compose, Store} from 'redux';
 import { fromJS } from 'immutable';
 import thunk from 'redux-thunk';
 import createSagaMiddleware, { END } from 'redux-saga';
-import { preEnd } from 'app/redux/ducks/support';
+import { preEnd } from 'app/redux/ducks/service';
 import { History } from 'history';
 
 
