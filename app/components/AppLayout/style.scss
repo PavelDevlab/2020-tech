@@ -9,10 +9,11 @@ body {
 
 .layout {
   &__header-inner {
-    min-width: 1000px;
     margin: 0 auto;
+    min-width: 800px;
   }
   &__header {
+    min-width: 800px;
     background: $pale;
     // padding: 15px;
     border-bottom: 1px solid $gray;
