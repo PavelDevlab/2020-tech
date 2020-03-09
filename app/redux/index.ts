@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import createSagaMiddleware, { END } from 'redux-saga';
 import { preEnd } from 'app/redux/ducks/service';
 import { History } from 'history';
-
+import {plainObjectMiddleware} from './middleware/plainObjectMiddleware';
 
 import { SagaMiddleware } from '@redux-saga/core/types';
 
@@ -36,6 +36,7 @@ const createEnhancedStore = (store:Store<ReduxAppState>, sagaMiddleWare:SagaMidd
 function createAppStore(initialState:any, history:History<History.PoorMansUnknown>) {
   const sagaMiddleWare = createSagaMiddleware();
   const middlewares = [
+    plainObjectMiddleware,
     thunk,
     routerMiddleware(history),
     sagaMiddleWare,

@@ -4,7 +4,7 @@ import { Form, Formik, Field, ErrorMessage } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import * as Yup from 'yup';
 import { compose } from 'redux';
-import { loginPerson } from 'app/redux/ducks/auth';
+import { LoginPerson } from 'app/redux/ducks/auth';
 
 import { FormikValues, FormikHelpers } from 'formik/dist/types';
 import { LoginValues } from './types/LoginPage';
@@ -88,8 +88,8 @@ export default compose(
     null,
     (dispatch) => {
         return {
-            onSubmit(values:FormikValues, actions:FormikHelpers<LoginValues>) {
-                dispatch((loginPerson({ values, actions })));
+            onSubmit(values:LoginValues, actions:FormikHelpers<LoginValues>) {
+                dispatch(new LoginPerson(values, actions));
             }
         };
     }

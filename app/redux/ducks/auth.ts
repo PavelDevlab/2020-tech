@@ -1,7 +1,7 @@
 
 import { all, takeLeading, call, put, take, fork, cancel, cancelled } from 'redux-saga/effects';
 import { eventChannel, EventChannel } from 'redux-saga';
-// import { appName } from 'app/config';
+
 import { RegisterValues } from 'app/components/auth/types/RegisterPage';
 import { LoginValues } from 'app/components/auth/types/LoginPage';
 import api from 'app/services/api';
@@ -10,9 +10,9 @@ import Immutable from 'immutable';
 import fb from 'firebase';
 
 import { SagaGenerator } from 'app/redux/types/saga';
-import { Action } from 'app/redux/types';
+
 import { ServiceActionType } from 'app/redux/ducks/service';
-import {FormikHelpers, FormikValues} from "formik/dist/types";
+import {FormikHelpers} from "formik/dist/types";
 
 /**
  * Constants
@@ -87,7 +87,7 @@ export class AuthRecord extends authRecord implements AuthState {
     }
 }
 
-type AuthAction = RegisterPersonAction | LoginPersonAction | StoreTokenAction | SignInSucceedAction | SignOutAction;
+type AuthAction = RegisterPerson | LoginPerson | StoreToken | SignInSucceed | SignOut;
 
 export default function reducer(state: AuthRecord = new AuthRecord(), action:AuthAction):AuthRecord {
     switch (action.type) {
@@ -118,87 +118,60 @@ export const signedInSelector = (state:Immutable.Map<string, any>) => moduleSele
 /**
  * Action Creators
  * */
-interface RegisterPersonAction {
-    type: AuthActionType.RegisterPersonRequest,
-    payload: FormikValues,
-    meta: FormikHelpers<RegisterValues>
-}
-export type RegisterPersonActionCreator = (payload:{values:FormikValues, actions:FormikHelpers<RegisterValues>}) => RegisterPersonAction;
-export const registerPerson:RegisterPersonActionCreator = ({values, actions}) => {
-    return {
-        type: AuthActionType.RegisterPersonRequest,
-        payload: values,
-        meta: actions
-    };
-};
+export class RegisterPerson {
+    readonly type = AuthActionType.RegisterPersonRequest;
 
-interface LoginPersonAction {
-    type: AuthActionType.LoginPersonRequest,
-    payload: FormikValues,
-    meta: FormikHelpers<LoginValues>
+    constructor(
+        public payload: RegisterValues,
+        public meta: FormikHelpers<RegisterValues>
+    ) {}
 }
-export type LoginPersonActionCreator = (payload:{values:FormikValues, actions:FormikHelpers<LoginValues>}) => LoginPersonAction;
-export const loginPerson:LoginPersonActionCreator = ({values, actions}) => {
-    return {
-        type: AuthActionType.LoginPersonRequest,
-        payload: values,
-        meta: actions
-    };
-};
 
-interface StoreTokenAction {
-    type: AuthActionType.StoreToken,
-    payload: TokenRecord
-}
-export type StoreTokenActionCreator = (tokenInfo: TokenRecord) => StoreTokenAction;
-export const storeToken:StoreTokenActionCreator = (tokenInfo) => {
-    return {
-        type: AuthActionType.StoreToken,
-        payload: tokenInfo
-    };
-};
+export class LoginPerson {
+    readonly type = AuthActionType.LoginPersonRequest;
 
-interface SignInSucceedAction {
-    type: AuthActionType.SignInSucceed,
-    payload: fb.User
+    constructor(
+        public payload: LoginValues,
+        public meta: FormikHelpers<LoginValues>
+    ) {}
 }
-export type SignInSucceedActionCreator = (tokenInfo: fb.User) => SignInSucceedAction;
-export const signInSucceed:SignInSucceedActionCreator = (user: fb.User) => {
-    return {
-        type: AuthActionType.SignInSucceed,
-        payload: user
-    };
-};
 
-interface SignOutAction {
-    type: AuthActionType.SignOut
-}
-export type SignOutActionCreator = () => SignOutAction;
-export const signOut:SignOutActionCreator = () => {
-    return {
-        type: AuthActionType.SignOut
-    };
-};
 
-interface SingOutRequestAction {
-    type: AuthActionType.SignOutRequest
+export class StoreToken {
+    readonly type = AuthActionType.StoreToken;
+
+    constructor(
+        public payload: TokenRecord
+    ) {}
 }
-export type SingOutRequestCreator = () => SingOutRequestAction;
-export const singOutRequest:SingOutRequestCreator = () => {
-    return {
-        type: AuthActionType.SignOutRequest
-    };
-};
+
+
+export class SignInSucceed {
+    readonly type = AuthActionType.SignInSucceed;
+
+    constructor(
+        public payload: fb.User
+    ) {}
+}
+
+export class SignOut {
+    readonly type = AuthActionType.SignOut;
+}
+
+
+export class SingOutRequest {
+    readonly type = AuthActionType.SignOutRequest;
+}
 
 /**
  * Sagas
  * */
-function* registerPersonSaga({ payload: values, meta: actions }:Action):SagaGenerator {
+function* registerPersonSaga({ payload: values, meta: actions }:RegisterPerson):SagaGenerator {
     const { resetForm, setErrors, setSubmitting } = actions;
 
     try {
         const tokenInfo = yield call(api.signUp, values);
-        yield put(storeToken(new TokenRecord(tokenInfo)));
+        yield put(new StoreToken(new TokenRecord(tokenInfo)));
 
         yield call(resetForm);
         yield call([history, "push"], {pathname: "/login"});
@@ -208,12 +181,12 @@ function* registerPersonSaga({ payload: values, meta: actions }:Action):SagaGene
     }
 }
 
-function* loginPersonSaga({ payload: values, meta: actions }:Action):SagaGenerator {
+function* loginPersonSaga({ payload: values, meta: actions }:LoginPerson):SagaGenerator {
     const { resetForm, setErrors, setSubmitting } = actions;
 
     try {
         const loginInfo = yield call(api.signIn, values);
-        yield put(signInSucceed(loginInfo.user));
+        yield put(new SignInSucceed(loginInfo.user));
 
         yield call(resetForm);
         yield call([history, "push"], {pathname: "/dashboard"});
@@ -248,9 +221,9 @@ export const watchAuthChangeSaga = function * ():SagaGenerator {
         while (true) {
             const { user } = yield take(authChannel);
             if (user) {
-                yield put(signInSucceed(user));
+                yield put(new SignInSucceed(user));
             } else {
-                yield put(signOut());
+                yield put(new SignOut());
             }
         }
     } finally {

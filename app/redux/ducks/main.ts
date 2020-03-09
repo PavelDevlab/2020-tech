@@ -4,7 +4,6 @@ import { all, takeLeading, call, put, select } from 'redux-saga/effects';
 import Immutable from 'immutable';
 
 import { SagaGenerator } from 'app/redux/types/saga';
-import { Action } from 'app/redux/types';
 
 
 /**
@@ -35,11 +34,13 @@ export class MainRecord extends mainRecord implements MainRecordState {
 }
 
 
+type MainAction = СreateLoadMainRequest | CreateLoadMainSucceed;
+
 // type MainAction = ;
 /**
  * Reducer
  * */
-export default function reducer(state:MainRecord = new MainRecord(), action:Action):MainRecord {
+export default function reducer(state:MainRecord = new MainRecord(), action:MainAction):MainRecord {
 
     switch (action.type) {
         case MainActionType.LoadMainSucceed:
@@ -57,28 +58,17 @@ export const mainInfoSelector = (state:Immutable.Map<string, any>) => state.get(
 /**
  * Action Creators
  * */
-
-interface CreateLoadMainAction {
-    type: MainActionType.LoadMainRequest
+export class СreateLoadMainRequest {
+    readonly type = MainActionType.LoadMainRequest;
 }
-export type CreateLoadMainRequestCreator = () => CreateLoadMainAction;
-export const createLoadMainRequest:CreateLoadMainRequestCreator = () => {
-    return {
-        type: MainActionType.LoadMainRequest,
-    };
-};
 
-interface CreateLoadMainSucceedAction {
-    type: MainActionType.LoadMainSucceed,
-    payload: string
+export class CreateLoadMainSucceed {
+    readonly type = MainActionType.LoadMainSucceed;
+
+    constructor(
+        public payload: string
+    ) {}
 }
-export type CreateLoadMainSucceedCreator = (info:string) => CreateLoadMainSucceedAction;
-const createLoadMainSucceed:CreateLoadMainSucceedCreator = (info:string) => {
-    return {
-        type: MainActionType.LoadMainSucceed,
-        payload: info
-    };
-};
 
 function sleep():Promise<void> {
     return new Promise((resolve) => {
@@ -95,7 +85,7 @@ function* loadMainInfo():SagaGenerator {
     const currentInfo = yield select(mainInfoSelector);
     if (!currentInfo) {
         yield call(sleep);
-        yield put(createLoadMainSucceed("Main unique info. -_-"));
+        yield put(new CreateLoadMainSucceed("Main unique info. -_-"));
     }
 }
 

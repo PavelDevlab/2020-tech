@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
-import { signedInSelector, singOutRequest } from 'app/redux/ducks/auth';
+import { signedInSelector, SingOutRequest } from 'app/redux/ducks/auth';
 import classNames from 'classnames';
 
 import withStyles from 'isomorphic-style-loader/withStyles';
@@ -67,7 +67,7 @@ export default compose(
       };
     }, (dispatch) => ({
       onLogout() {
-        dispatch(singOutRequest());
+        dispatch(new SingOutRequest());
       }
     })
   ),
