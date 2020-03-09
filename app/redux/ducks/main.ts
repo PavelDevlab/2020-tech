@@ -1,38 +1,49 @@
 
 import { all, takeLeading, call, put, select } from 'redux-saga/effects';
-import { appName } from 'app/config';
-import Immutable, {Record} from 'immutable';
+
+import Immutable from 'immutable';
 
 import { SagaGenerator } from 'app/redux/types/saga';
 import { Action } from 'app/redux/types';
-
 
 
 /**
  * Constants
  * */
 export const moduleName = 'main';
-const prefix = `${appName}/${moduleName}`;
+// const prefix = `${appName}/${moduleName}`;
 
-export const LOAD_MAIN_REQUEST = `${prefix}/LOAD_MAIN_REQUEST`;
-export const LOAD_MAIN_SUCCEED = `${prefix}/LOAD_MAIN_SUCCEED`;
+enum MainActionType {
+    LoadMainRequest = 'main/LoadMainRequest',
+    LoadMainSucceed = 'main/LoadMainSucceed'
+}
 
 /**
  * Reducer
  * */
-const AuthRecord = Record({
+interface MainRecordState {
+    info: string
+}
+const mainRecord = Immutable.Record<MainRecordState>({
     info: ""
 });
+export class MainRecord extends mainRecord implements MainRecordState {
+    info: string;
+    constructor(config: Partial<MainRecordState> = {}) {
+        super(config);
+    }
+}
 
+
+// type MainAction = ;
 /**
  * Reducer
  * */
-export default function reducer(state = new AuthRecord(), action:Action) {
-    const {type, payload} = action
+export default function reducer(state:MainRecord = new MainRecord(), action:Action):MainRecord {
 
-    switch (type) {
-        case LOAD_MAIN_SUCCEED:
-            return state.set('info', payload);
+    switch (action.type) {
+        case MainActionType.LoadMainSucceed:
+            return state.set('info', action.payload);
         default:
             return state;
     }
@@ -46,20 +57,30 @@ export const mainInfoSelector = (state:Immutable.Map<string, any>) => state.get(
 /**
  * Action Creators
  * */
-export const createLoadMainRequest = () => {
+
+interface CreateLoadMainAction {
+    type: MainActionType.LoadMainRequest
+}
+export type CreateLoadMainRequestCreator = () => CreateLoadMainAction;
+export const createLoadMainRequest:CreateLoadMainRequestCreator = () => {
     return {
-        type: LOAD_MAIN_REQUEST,
+        type: MainActionType.LoadMainRequest,
     };
 };
 
-const createLoadMainSucceed = (info:string) => {
+interface CreateLoadMainSucceedAction {
+    type: MainActionType.LoadMainSucceed,
+    payload: string
+}
+export type CreateLoadMainSucceedCreator = (info:string) => CreateLoadMainSucceedAction;
+const createLoadMainSucceed:CreateLoadMainSucceedCreator = (info:string) => {
     return {
-        type: LOAD_MAIN_SUCCEED,
+        type: MainActionType.LoadMainSucceed,
         payload: info
     };
 };
 
-function sleep() {
+function sleep():Promise<void> {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve();
@@ -81,6 +102,6 @@ function* loadMainInfo():SagaGenerator {
 
 export function* saga():SagaGenerator {
     yield all([
-        takeLeading(LOAD_MAIN_REQUEST, loadMainInfo)
+        takeLeading(MainActionType.LoadMainRequest, loadMainInfo)
     ]);
 }

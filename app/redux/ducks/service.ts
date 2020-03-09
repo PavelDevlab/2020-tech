@@ -1,8 +1,14 @@
 
-export const PRE_END = "$$$PRE_END$$$";
+export enum ServiceActionType {
+  PreEnd = "$$$PRE_END$$$"
+}
 
-export const preEnd = () => {
+interface PreEndAction {
+  type: ServiceActionType.PreEnd
+}
+export type PreEndActionCreator = () => PreEndAction
+export const preEnd:PreEndActionCreator = () => {
   return {
-    type: PRE_END
+    type: ServiceActionType.PreEnd
   };
 };
