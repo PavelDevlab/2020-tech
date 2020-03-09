@@ -8,23 +8,13 @@ import { mainInfoSelector } from 'app/redux/ducks/main';
 import withStyles from 'isomorphic-style-loader/withStyles';
 import s from './AppLayout/style.scss';
 import { connect } from  'react-redux';
-import PropTypes, { InferProps } from "prop-types";
 
-// import {Func1} from 'redux';
-
-const propTypes = {
-    info: PropTypes.string.isRequired,
-    loadMainInfo: PropTypes.func.isRequired
+type MainPageProps = {
+    info: string,
+    loadMainInfo: () => void
 };
 
-const defaultProps = {
-    info: '',
-    onSubmit: () => null
-};
-
-type MainPageProps = InferProps<typeof propTypes>;
-
-const MainPage = ({info, loadMainInfo}:MainPageProps) => {
+const MainPage:React.FunctionComponent<MainPageProps> = ({info, loadMainInfo}) => {
 
     useIsomorphicEffect(() => {
         loadMainInfo();
@@ -36,10 +26,6 @@ const MainPage = ({info, loadMainInfo}:MainPageProps) => {
         </div>
     );
 };
-
-
-MainPage.propTypes = propTypes;
-MainPage.defaultProps = defaultProps;
 
 export default compose(
     connect((state:Immutable.Map<string, any>) => {
@@ -53,4 +39,4 @@ export default compose(
       })
     ),
     withStyles(s),
-)(MainPage as any);
+)(MainPage);

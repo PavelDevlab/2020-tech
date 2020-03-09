@@ -1,35 +1,27 @@
 
-import React, {ReactElement} from 'react';
+import React from 'react';
 import Immutable from 'immutable';
-import { Route, RouteProps, Redirect /*, RouteComponentProps */ } from 'react-router';
+import { Route, Redirect  } from 'react-router';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import PropTypes, { InferProps } from 'prop-types';
+
 import { signedInSelector } from 'app/redux/ducks/auth';
 
 
-const propTypes = {
-  component: PropTypes.element.isRequired,
-  signedIn: PropTypes.bool.isRequired,
-  $$$targetSignedIn$$$: PropTypes.bool.isRequired,
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]).isRequired,
-  path: PropTypes.string.isRequired,
+interface AuthRoutePropTypes {
+  component: React.ComponentType<{}>,
+  signedIn: boolean,
+  $$$targetSignedIn$$$: boolean,
+  path: string
 };
 
 const defaultProps = {
-  component: React.Component,
   signedIn: false,
   $$$targetSignedIn$$$: false,
   children: null
 };
 
-type AuthRouteProps = InferProps<typeof propTypes> & RouteProps;
-
-
-const AuthRoute = ({ signedIn, $$$targetSignedIn$$$, ...rest }: AuthRouteProps):ReactElement => {
+const AuthRoute:React.FunctionComponent<AuthRoutePropTypes> = ({ signedIn, $$$targetSignedIn$$$, ...rest }) => {
 
   const RenderContent:any = (/*props*/) => {
     if ($$$targetSignedIn$$$) {
@@ -50,7 +42,6 @@ const AuthRoute = ({ signedIn, $$$targetSignedIn$$$, ...rest }: AuthRouteProps):
   }} />;
 };
 
-AuthRoute.propTypes = propTypes;
 AuthRoute.defaultProps = defaultProps;
 
 export const PrivateRoute = (compose(
@@ -60,7 +51,7 @@ export const PrivateRoute = (compose(
       $$$targetSignedIn$$$: true
     };
   }),
-)(AuthRoute as any) as any as (typeof AuthRoute));
+)(AuthRoute)) as any;
 
 
 export const PublicRoute = (compose(
@@ -70,4 +61,4 @@ export const PublicRoute = (compose(
       $$$targetSignedIn$$$: false
     };
   }),
-)(AuthRoute as any) as any as (typeof AuthRoute));
+)(AuthRoute)) as any;

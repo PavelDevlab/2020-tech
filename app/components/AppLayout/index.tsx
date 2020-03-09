@@ -1,7 +1,7 @@
 
 import React from 'react';
 import {Link} from 'react-router-dom';
-import PropTypes, { InferProps } from "prop-types";
+
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
@@ -11,22 +11,12 @@ import classNames from 'classnames';
 import withStyles from 'isomorphic-style-loader/withStyles';
 import s from './style.scss';
 
-const propTypes = {
-  signedIn: PropTypes.bool.isRequired,
-  onLogout: PropTypes.func.isRequired,
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]).isRequired
+interface IndexPropTypes {
+  signedIn: boolean,
+  onLogout: () => void,
 };
 
-const defaultProps = {
-  onLogout: () => null,
-  signedIn: false,
-  children: null
-};
-
-const Index = ({signedIn, children, onLogout}:InferProps<typeof propTypes>) => {
+const Index:React.FunctionComponent<IndexPropTypes> = ({signedIn, children, onLogout}) => {
 
   return (
     <div className={s['layout']}>
@@ -69,9 +59,6 @@ const Index = ({signedIn, children, onLogout}:InferProps<typeof propTypes>) => {
     </div>
   );
 };
-
-Index.defaultProps = defaultProps;
-Index.propTypes = propTypes;
 
 export default compose(
   connect((state: Immutable.Map<string, any>) => {

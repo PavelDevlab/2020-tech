@@ -11,7 +11,7 @@ import fb from 'firebase';
 
 import { SagaGenerator } from 'app/redux/types/saga';
 import { Action } from 'app/redux/types';
-import { PRE_END } from 'app/redux/ducks/support';
+import { PRE_END } from 'app/redux/ducks/service';
 
 /**
  * Constants

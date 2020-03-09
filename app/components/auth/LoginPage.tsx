@@ -4,7 +4,6 @@ import { Form, Formik, Field, ErrorMessage } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import * as Yup from 'yup';
 import { compose } from 'redux';
-import PropTypes, { InferProps } from "prop-types";
 import { loginPerson } from 'app/redux/ducks/auth';
 
 import { FormikValues, FormikHelpers } from 'formik/dist/types';
@@ -29,18 +28,11 @@ const validationSchema = Yup.object().shape({
     password: Yup.string().required("Required"),
 });
 
-const propTypes = {
-    onSubmit: PropTypes.func.isRequired
+interface LoginPagePropTypes {
+    onSubmit: (values:FormikValues, actions:FormikHelpers<LoginValues>) => void
 };
 
-const defaultProps = {
-    onSubmit: () => null
-};
-
-type LoginPageProps = InferProps<typeof propTypes>;
-
-
-const LoginPage:FunctionComponent<LoginPageProps> = ({ onSubmit }: LoginPageProps) => {
+const LoginPage:FunctionComponent<LoginPagePropTypes> = ({ onSubmit }) => {
 
     return (
       <Formik
@@ -90,9 +82,6 @@ const LoginPage:FunctionComponent<LoginPageProps> = ({ onSubmit }: LoginPageProp
       </Formik>
     );
 };
-
-LoginPage.propTypes = propTypes;
-LoginPage.defaultProps = defaultProps;
 
 export default compose(
   connect(

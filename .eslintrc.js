@@ -43,6 +43,7 @@ module.exports = {
 
     "no-param-reassign": "off", // Это - не наш стиль?
     "radix": "off", // parseInt, parseFloat и radix выключены. Мне это не нравится.
+    "react/prop-types": "off",
 
     "react/require-default-props": "off", // airbnb использует уведомление об ошибке
     "react/forbid-prop-types": "off", // airbnb использует уведомление об ошибке

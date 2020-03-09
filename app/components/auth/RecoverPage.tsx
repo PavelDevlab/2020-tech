@@ -1,3 +1,4 @@
+/*
 import React, {useCallback} from 'react';
 
 const RecoverPage = () => {
@@ -24,3 +25,4 @@ const RecoverPage = () => {
 
 
 export default RecoverPage;
+ */

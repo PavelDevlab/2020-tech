@@ -4,7 +4,6 @@ import { Form, Formik, Field, ErrorMessage } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import * as Yup from 'yup';
 import { compose } from 'redux';
-import PropTypes, { InferProps } from "prop-types";
 import { registerPerson } from 'app/redux/ducks/auth';
 
 import classNames from 'classnames';
@@ -38,18 +37,11 @@ const validationSchema = Yup.object().shape({
       .required("Required"),
 });
 
-const propTypes = {
-    onSubmit: PropTypes.func.isRequired
+interface RegisterPagePropTypes {
+    onSubmit: (values:FormikValues, actions:FormikHelpers<RegisterValues>) => void
 };
 
-const defaultProps = {
-    onSubmit: () => null
-};
-
-type RegisterPageProps = InferProps<typeof propTypes>;
-
-
-const RegisterPage:FunctionComponent<RegisterPageProps> = ({ onSubmit }: RegisterPageProps) => {
+const RegisterPage:FunctionComponent<RegisterPagePropTypes> = ({ onSubmit }) => {
 
     return (
         <Formik
@@ -111,9 +103,6 @@ const RegisterPage:FunctionComponent<RegisterPageProps> = ({ onSubmit }: Registe
         </Formik>
     );
 };
-
-RegisterPage.propTypes = propTypes;
-RegisterPage.defaultProps = defaultProps;
 
 export default compose(
     connect(
