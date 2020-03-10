@@ -10,7 +10,7 @@ import { createMemoryHistory } from 'history';
 import ReactDOMServer from 'react-dom/server';
 
 import { UrlWithStringQuery } from 'url';
-import { ReduxAppState } from 'app/redux/reducer';
+import { StoreRecord } from 'app/redux/reducer';
 
 import { StaticRouter } from 'react-router-dom';
 import App from 'app/components/App';
@@ -43,7 +43,7 @@ class SSRenderer {
     private rootTask: Task;
     private css:Set<string>;
     private location: UrlWithStringQuery;
-    private store: EnhancedStore<ReduxAppState>;
+    private store: EnhancedStore<StoreRecord>;
 
 
     constructor({ url }:SSRendererProps) {

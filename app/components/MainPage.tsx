@@ -1,6 +1,6 @@
 import React from "react";
 import { compose } from 'redux';
-import { СreateLoadMainRequest } from 'app/redux/ducks/main';
+import { CreateLoadMainRequest } from 'app/redux/ducks/main';
 import Immutable from 'immutable';
 import { useIsomorphicEffect } from 'app/extentions/react';
 import { mainInfoSelector } from 'app/redux/ducks/main';
@@ -34,7 +34,7 @@ export default compose(
         };
       }, (dispatch) => ({
         loadMainInfo() {
-          dispatch(new СreateLoadMainRequest());
+          dispatch(new CreateLoadMainRequest());
         }
       })
     ),

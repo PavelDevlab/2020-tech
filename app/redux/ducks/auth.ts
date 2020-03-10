@@ -87,7 +87,7 @@ export class AuthRecord extends authRecord implements AuthState {
     }
 }
 
-type AuthAction = RegisterPerson | LoginPerson | StoreToken | SignInSucceed | SignOut;
+export type AuthAction = RegisterPerson | LoginPerson | StoreToken | SignInSucceed | SignOut;
 
 export default function reducer(state: AuthRecord = new AuthRecord(), action:AuthAction):AuthRecord {
     switch (action.type) {

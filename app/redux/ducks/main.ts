@@ -34,7 +34,7 @@ export class MainRecord extends mainRecord implements MainRecordState {
 }
 
 
-type MainAction = СreateLoadMainRequest | CreateLoadMainSucceed;
+export type MainAction = CreateLoadMainRequest | CreateLoadMainSucceed;
 
 // type MainAction = ;
 /**
@@ -58,7 +58,7 @@ export const mainInfoSelector = (state:Immutable.Map<string, any>) => state.get(
 /**
  * Action Creators
  * */
-export class СreateLoadMainRequest {
+export class CreateLoadMainRequest {
     readonly type = MainActionType.LoadMainRequest;
 }
 

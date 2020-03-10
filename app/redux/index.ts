@@ -9,7 +9,7 @@ import {plainObjectMiddleware} from './middleware/plainObjectMiddleware';
 import { SagaMiddleware } from '@redux-saga/core/types';
 
 import { routerMiddleware } from 'connected-react-router/immutable';
-import createRootReducer, {ReduxAppState} from './reducer';
+import createRootReducer, {StoreRecord} from './reducer';
 
 // type Reducer<S> = <A extends Action>(state: S, action: A) => S;
 export type EnhancedStore<S> = Store<S> & {
@@ -22,8 +22,8 @@ export type EnhancedStore<S> = Store<S> & {
 // [P1 in keyof EnhancedStorePart]: EnhancedStorePart[P1];
 // type MyPartial<S> = Partial<S>;
 // type Reducer<S> = <A extends Action>(state: S, action: A) => S;
-const createEnhancedStore = (store:Store<ReduxAppState>, sagaMiddleWare:SagaMiddleware) => {
-  const enhancedStore = store as EnhancedStore<ReduxAppState>;
+const createEnhancedStore = (store:Store<StoreRecord>, sagaMiddleWare:SagaMiddleware) => {
+  const enhancedStore = store as EnhancedStore<StoreRecord>;
   enhancedStore.runSaga = sagaMiddleWare.run;
   enhancedStore.close = () => {
     store.dispatch(preEnd());

@@ -1,10 +1,11 @@
 
 import { combineReducers } from 'redux-immutable';
-import { fromJS } from 'immutable';
+import Immutable, { fromJS } from 'immutable';
 import { connectRouter } from 'connected-react-router/immutable';
 import { History } from 'history';
-import authReducer, {moduleName as authModuleName} from './ducks/auth';
-import mainReducer, {moduleName as mainModuleName} from './ducks/main';
+import appHistory from './history';
+import authReducer, {moduleName as authModuleName, AuthRecord } from './ducks/auth';
+import mainReducer, {moduleName as mainModuleName, MainRecord } from './ducks/main';
 
 // import appReducer from 'temp/containers/App/reducers/app';
 
@@ -13,10 +14,9 @@ import {
   setToImmutableStateFunc,
   setToMutableStateFunc,
 } from 'redux-connect';
+import Redux from "redux";
+import {RouterState} from "connected-react-router";
 
-type ReducerState<R> = R extends <S, A>(state: infer T, action: A) => S ? T : never;
-type ReducerCreatorResult<C> = C extends (history: History) => infer T ? T : never;
-type ReduxState<C> = ReducerState<ReducerCreatorResult<C>>;
 
 setToImmutableStateFunc((mutableState:any) => fromJS(mutableState));
 setToMutableStateFunc((immutableState:any) => immutableState.toJS());
@@ -28,6 +28,26 @@ const rootReducerCreator = (history:History) => combineReducers({
   [mainModuleName]: mainReducer,
 });
 
-export type ReduxAppState = ReduxState<typeof rootReducerCreator>;
+
+interface StoreState {
+  router: Redux.Reducer<RouterState>,
+  [authModuleName]: AuthRecord,
+  [mainModuleName]: MainRecord,
+}
+
+const storeRecord = Immutable.Record<StoreState>({
+  router: connectRouter(appHistory),
+  [authModuleName]: new AuthRecord(),
+  [mainModuleName]: new MainRecord(),
+});
+
+export class StoreRecord extends storeRecord implements StoreState {
+  router: Redux.Reducer<RouterState>;
+  [authModuleName]: AuthRecord;
+  [mainModuleName]: MainRecord;
+  constructor(config: Partial<StoreState> = {}) {
+    super(config);
+  }
+}
 
 export default rootReducerCreator;
