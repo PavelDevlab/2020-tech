@@ -3,18 +3,28 @@ import React, { FunctionComponent } from 'react';
 import { Form, Formik, Field, ErrorMessage } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import * as Yup from 'yup';
-import { compose } from 'redux';
+import { compose } from 'app/services/utils';
 import { LoginPerson } from 'app/redux/ducks/auth';
 
-import { FormikValues, FormikHelpers } from 'formik/dist/types';
+import { FormikHelpers } from 'formik/dist/types';
 import { LoginValues } from './types/LoginPage';
-import {connect} from 'react-redux';
-
+import {connect, ConnectedProps} from 'react-redux';
 
 import classNames from 'classnames';
 
 import withStyles from 'isomorphic-style-loader/withStyles';
 import s from 'app/components/common/form.scss';
+
+const connector = connect(
+    null,
+    (dispatch) => {
+        return {
+            onSubmit(values:LoginValues, actions:FormikHelpers<LoginValues>) {
+                dispatch(new LoginPerson(values, actions));
+            }
+        };
+    }
+);
 
 const initialValues:LoginValues = {
     login: '',
@@ -28,9 +38,7 @@ const validationSchema = Yup.object().shape({
     password: Yup.string().required("Required"),
 });
 
-interface LoginPagePropTypes {
-    onSubmit: (values:FormikValues, actions:FormikHelpers<LoginValues>) => void
-};
+type LoginPagePropTypes = ConnectedProps<typeof connector>;
 
 const LoginPage:FunctionComponent<LoginPagePropTypes> = ({ onSubmit }) => {
 
@@ -84,15 +92,6 @@ const LoginPage:FunctionComponent<LoginPagePropTypes> = ({ onSubmit }) => {
 };
 
 export default compose(
-  connect(
-    null,
-    (dispatch) => {
-        return {
-            onSubmit(values:LoginValues, actions:FormikHelpers<LoginValues>) {
-                dispatch(new LoginPerson(values, actions));
-            }
-        };
-    }
-  ),
+  connector,
   withStyles(s)
-)(LoginPage as any);
+)(LoginPage);

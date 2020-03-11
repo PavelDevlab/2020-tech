@@ -13,6 +13,7 @@ import { SagaGenerator } from 'app/redux/types/saga';
 
 import { ServiceActionType } from 'app/redux/ducks/service';
 import {FormikHelpers} from "formik/dist/types";
+import {StoreRecord} from "app/redux/reducer";
 
 /**
  * Constants
@@ -112,8 +113,8 @@ export default function reducer(state: AuthRecord = new AuthRecord(), action:Aut
 /**
  * Selectors
  * */
-const moduleSelector = (state:Immutable.Map<string, any>) => state.get(moduleName);
-export const signedInSelector = (state:Immutable.Map<string, any>) => moduleSelector(state).get('signedIn');
+const moduleSelector = (state:StoreRecord) => state.get(moduleName);
+export const signedInSelector = (state:StoreRecord) => moduleSelector(state).get('signedIn');
 
 /**
  * Action Creators

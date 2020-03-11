@@ -1,18 +1,27 @@
+
 import React from "react";
-import { compose } from 'redux';
+import { compose } from 'app/services/utils';
 import { CreateLoadMainRequest } from 'app/redux/ducks/main';
-import Immutable from 'immutable';
+import { StoreRecord } from 'app/redux/reducer';
 import { useIsomorphicEffect } from 'app/extentions/react';
 import { mainInfoSelector } from 'app/redux/ducks/main';
 
 import withStyles from 'isomorphic-style-loader/withStyles';
 import s from './AppLayout/style.scss';
-import { connect } from  'react-redux';
+import { connect, ConnectedProps } from  'react-redux';
 
-type MainPageProps = {
-    info: string,
-    loadMainInfo: () => void
-};
+const connector = connect((state: StoreRecord) => {
+        return {
+            info: mainInfoSelector(state),
+        };
+    }, (dispatch) => ({
+        loadMainInfo() {
+            dispatch(new CreateLoadMainRequest());
+        }
+    })
+);
+
+type MainPageProps = ConnectedProps<typeof connector>;
 
 const MainPage:React.FunctionComponent<MainPageProps> = ({info, loadMainInfo}) => {
 
@@ -28,15 +37,6 @@ const MainPage:React.FunctionComponent<MainPageProps> = ({info, loadMainInfo}) =
 };
 
 export default compose(
-    connect((state:Immutable.Map<string, any>) => {
-        return {
-          info: mainInfoSelector(state),
-        };
-      }, (dispatch) => ({
-        loadMainInfo() {
-          dispatch(new CreateLoadMainRequest());
-        }
-      })
-    ),
+    connector,
     withStyles(s),
 )(MainPage);

@@ -2,19 +2,33 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import Immutable from 'immutable';
+import { connect, ConnectedProps } from 'react-redux';
+import { compose } from 'app/services/utils';
+
 import { signedInSelector, SingOutRequest } from 'app/redux/ducks/auth';
 import classNames from 'classnames';
 
 import withStyles from 'isomorphic-style-loader/withStyles';
 import s from './style.scss';
 
-interface IndexPropTypes {
-  signedIn: boolean,
-  onLogout: () => void,
-};
+import {StoreRecord} from 'app/redux/reducer';
+
+
+const connector = connect((state: StoreRecord) => {
+        return {
+            signedIn: signedInSelector(state),
+        };
+    }, (dispatch) => ({
+        onLogout() {
+            dispatch(new SingOutRequest());
+        }
+    })
+);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+type IndexPropTypes = PropsFromRedux & {
+    children: React.ReactElement | React.ReactElement[],
+}
 
 const Index:React.FunctionComponent<IndexPropTypes> = ({signedIn, children, onLogout}) => {
 
@@ -61,15 +75,6 @@ const Index:React.FunctionComponent<IndexPropTypes> = ({signedIn, children, onLo
 };
 
 export default compose(
-  connect((state: Immutable.Map<string, any>) => {
-      return {
-        signedIn: signedInSelector(state),
-      };
-    }, (dispatch) => ({
-      onLogout() {
-        dispatch(new SingOutRequest());
-      }
-    })
-  ),
-  withStyles(s)
-)(Index as any);
+    connector,
+    withStyles(s)
+)(Index);

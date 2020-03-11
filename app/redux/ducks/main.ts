@@ -4,6 +4,7 @@ import { all, takeLeading, call, put, select } from 'redux-saga/effects';
 import Immutable from 'immutable';
 
 import { SagaGenerator } from 'app/redux/types/saga';
+import {StoreRecord} from "app/redux/reducer";
 
 
 /**
@@ -53,7 +54,7 @@ export default function reducer(state:MainRecord = new MainRecord(), action:Main
 /**
  * Selectors
  * */
-export const mainInfoSelector = (state:Immutable.Map<string, any>) => state.get(moduleName).get('info');
+export const mainInfoSelector = (state:StoreRecord) => state.get(moduleName).get('info');
 
 /**
  * Action Creators

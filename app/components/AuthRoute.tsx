@@ -1,64 +1,56 @@
 
 import React from 'react';
-import Immutable from 'immutable';
+
 import { Route, Redirect  } from 'react-router';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
+import { compose } from 'app/services/utils';
+import { connect, ConnectedProps } from 'react-redux';
+import { StoreRecord } from 'app/redux/reducer';
 
 import { signedInSelector } from 'app/redux/ducks/auth';
 
+const connectorPrivate = connect((state: StoreRecord) => {
+  return {
+    signedIn: signedInSelector(state),
+    $$$targetSignedIn$$$: true
+  };
+});
 
-interface AuthRoutePropTypes {
-  component: React.ComponentType<{}>,
-  signedIn: boolean,
-  $$$targetSignedIn$$$: boolean,
+const connectorPublic = connect((state: StoreRecord) => {
+  return {
+    signedIn: signedInSelector(state),
+    $$$targetSignedIn$$$: false
+  };
+});
+
+type AuthRoutePropTypes = ConnectedProps<typeof connectorPrivate> & {
+  children: React.ReactElement | React.ReactElement[]
   path: string
-};
-
-const defaultProps = {
-  signedIn: false,
-  $$$targetSignedIn$$$: false,
-  children: null
 };
 
 const AuthRoute:React.FunctionComponent<AuthRoutePropTypes> = ({ signedIn, $$$targetSignedIn$$$, ...rest }) => {
 
-  const RenderContent:any = (/*props*/) => {
+  const RenderAuthContent:any = (/*props*/) => {
     if ($$$targetSignedIn$$$) {
       return signedIn === $$$targetSignedIn$$$ ?
         rest.children :
         <Redirect to='/login' />;
     }
-    if (!$$$targetSignedIn$$$) {
-      return signedIn === $$$targetSignedIn$$$ ?
-        rest.children :
-        <Redirect to='/' />;
-    }
+    return signedIn === $$$targetSignedIn$$$ ?
+      rest.children :
+      <Redirect to='/' />;
   };
 
   return <Route {...{
       ...rest,
-      children: <RenderContent />
+      children: <RenderAuthContent />
   }} />;
 };
 
-AuthRoute.defaultProps = defaultProps;
-
-export const PrivateRoute = (compose(
-  connect((state:Immutable.Map<string, any>) => {
-    return {
-      signedIn: signedInSelector(state),
-      $$$targetSignedIn$$$: true
-    };
-  }),
-)(AuthRoute)) as any;
+export const PrivateRoute = compose(
+    connectorPrivate,
+)(AuthRoute);
 
 
-export const PublicRoute = (compose(
-  connect((state:Immutable.Map<string, any>) => {
-    return {
-      signedIn: signedInSelector(state),
-      $$$targetSignedIn$$$: false
-    };
-  }),
-)(AuthRoute)) as any;
+export const PublicRoute = compose(
+    connectorPublic,
+)(AuthRoute);

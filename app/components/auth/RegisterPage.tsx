@@ -3,7 +3,7 @@ import React, { FunctionComponent } from 'react';
 import { Form, Formik, Field, ErrorMessage } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import * as Yup from 'yup';
-import { compose } from 'redux';
+import { compose } from 'app/services/utils';
 import { RegisterPerson } from 'app/redux/ducks/auth';
 
 import classNames from 'classnames';
@@ -11,10 +11,21 @@ import classNames from 'classnames';
 import withStyles from 'isomorphic-style-loader/withStyles';
 import s from 'app/components/common/form.scss';
 
-import { FormikValues, FormikHelpers } from 'formik/dist/types';
+import { FormikHelpers } from 'formik/dist/types';
 import { RegisterValues } from './types/RegisterPage';
-import {connect} from 'react-redux';
+import {connect, ConnectedProps} from 'react-redux';
 
+
+const connector = connect(
+    null,
+    (dispatch) => {
+        return {
+            onSubmit(values:RegisterValues, actions:FormikHelpers<RegisterValues>) {
+                dispatch((new RegisterPerson(values, actions)));
+            }
+        };
+    }
+)
 
 const initialValues:RegisterValues = {
     login: '',
@@ -37,9 +48,7 @@ const validationSchema = Yup.object().shape({
       .required("Required"),
 });
 
-interface RegisterPagePropTypes {
-    onSubmit: (values:FormikValues, actions:FormikHelpers<RegisterValues>) => void
-};
+type RegisterPagePropTypes = ConnectedProps<typeof connector>;
 
 const RegisterPage:FunctionComponent<RegisterPagePropTypes> = ({ onSubmit }) => {
 
@@ -105,15 +114,6 @@ const RegisterPage:FunctionComponent<RegisterPagePropTypes> = ({ onSubmit }) => 
 };
 
 export default compose(
-    connect(
-        null,
-        (dispatch) => {
-            return {
-                onSubmit(values:RegisterValues, actions:FormikHelpers<RegisterValues>) {
-                    dispatch((new RegisterPerson(values, actions)));
-                }
-            };
-        }
-    ),
+    connector,
     withStyles(s)
 )(RegisterPage as any);
