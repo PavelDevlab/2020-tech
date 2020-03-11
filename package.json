@@ -7,12 +7,12 @@
     ]
   },
   "__pre-commit": "lint:staged",
-  "name": "SPA_Shop_2020",
+  "name": "Shop_2020",
   "version": "1.0.0",
-  "description": "Server Side Rendering Demo",
+  "description": "Shop",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yantsishko/ssr-demo-expressjs"
+    "url": "https://github.com/PavelDevlab/2020-tech.git"
   },
   "engines": {
     "npm": ">=3",
