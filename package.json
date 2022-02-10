@@ -76,7 +76,7 @@
     "localStorage": "^1.0.4",
     "lodash": "^4.17.15",
     "mini-create-react-context": "^0.3.2",
-    "node-sass": "^4.12.0",
+    "node-sass": "^7.0.0",
     "nodemon": "^1.19.1",
     "prop-types": "15.5.10",
     "react": "16.12.0",
